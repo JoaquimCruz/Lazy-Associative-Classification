@@ -1,31 +1,38 @@
 #include <bits/stdc++.h>
 
-// Função que transforma uma linha de números em tuplas numeradas
-std::vector<std::tuple<int, int>> transformarEmTuplas(const std::string& linha) {
+
+// Função que transforma uma linha de números em tuplas numeradas (combina naipe e valor)
+std::vector<std::tuple<int, int>> transformarTuplas(const std::string& linha) {
     std::vector<std::tuple<int, int>> tuplas;
     std::stringstream ss(linha);
     std::string item;
     int index = 0;
 
-    while (std::getline(ss, item, ',')) {
-        tuplas.push_back(std::make_tuple(index, std::stoi(item)));
+    while (index < 5 && std::getline(ss, item, ',')) {  // Loop para cada carta (5 cartas)
+        int naipe = std::stoi(item);
+        std::getline(ss, item, ',');  // Pular para a próxima coluna (valor da carta)
+        int valor = std::stoi(item);
+        
+        tuplas.push_back(std::make_tuple(naipe, valor));
         index++;
     }
 
     return tuplas;
 }
 
-// Função que calcula o hash de cada tupla com uma combinação mais robusta
-std::vector<size_t> calcularHash(const std::vector<std::tuple<int, int>>& tuplas) {
+
+// Função que calcula o hash de cada tupla (naipe e valor combinados)
+std::vector<size_t> calcularHash(const std::vector<std::tuple<int, std::pair<int, int>>>& tuplas){
     std::vector<size_t> hashes;
-    size_t prime_number = 31;  // Número primo para reduzir colisões
+    size_t numero_primo = 31;
 
     for (const auto& tupla : tuplas) {
-        size_t coluna_hash = std::hash<int>()(std::get<0>(tupla));
-        size_t valor_hash = std::hash<int>()(std::get<1>(tupla));
 
-        // Combinação de hashes com uma fórmula que leva em conta a ordem e minimiza colisões
-        size_t hash_value = coluna_hash * prime_number + valor_hash;
+        size_t naipe_hash = std::hash<int>()(std :: get<0>(std::get<1>(tupla)));
+        size_t valor_hash = std :: hash<int>()(std :: get <1>(std :: get<1>(tupla)));
+
+        // Combinação dos hashes (ordem é importante para evitar colisões)
+        size_t hash_value = (naipe_hash * numero_primo) + valor_hash;
         hashes.push_back(hash_value);
     }
 
@@ -79,7 +86,7 @@ std::vector<std::vector<int>> agruparLinhasSemelhantes(const std::vector<std::ve
     return baldes;
 }
 
-int main() {
+/*int main() {
     std::ifstream arquivo("Arquivos/poker-hand-testing.data");  // Abre o arquivo para leitura
     if (!arquivo.is_open()) {
         std::cerr << "Erro ao abrir o arquivo." << std::endl;
@@ -91,7 +98,7 @@ int main() {
 
     // Lê cada linha do arquivo
     while (std::getline(arquivo, linha)) {
-        tuplas_linhas.push_back(transformarEmTuplas(linha));
+        tuplas_linhas.push_back(transformarTuplas(linha));
     }
 
     arquivo.close();  // Fecha o arquivo após a leitura
@@ -117,4 +124,4 @@ int main() {
     }
 
     return 0;
-}
+}*/
