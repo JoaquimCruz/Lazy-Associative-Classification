@@ -1,4 +1,6 @@
+#include "Training.cpp"
 #include <bits/stdc++.h>
+
 
 
 // Função que transforma uma linha de números em tuplas numeradas (combina naipe e valor)
@@ -85,7 +87,6 @@ std::vector<std::vector<int>> agruparLinhasSemelhantes(const std::vector<std::ve
 
     return baldes;
 }
-
 /*int main() {
     std::ifstream arquivo("Arquivos/poker-hand-testing.data");  // Abre o arquivo para leitura
     if (!arquivo.is_open()) {
