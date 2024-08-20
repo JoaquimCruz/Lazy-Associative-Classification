@@ -109,14 +109,3 @@ std::vector<size_t> PokerHandTreino::calcularHash(const std::vector<std::tuple<i
     return hashes;
 }
 
-int main() {
-    try {
-        PokerHandTreino aux("Input/poker-hand-testing.data", "Output/Assinaturas.data", "Output/Classes.data");
-        aux.CriarTuplas();
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
-
-    return 0;
-}

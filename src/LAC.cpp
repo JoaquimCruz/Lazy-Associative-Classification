@@ -87,6 +87,20 @@ std::vector<std::vector<int>> agruparLinhasSemelhantes(const std::vector<std::ve
 
     return baldes;
 }
+
+int main() {
+    try {
+        PokerHandTreino aux("Input/poker-hand-testing.data", "Output/Assinaturas.data", "Output/Classes.data");
+        aux.CriarTuplas();
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+
+    return 0;
+}
+
+
 /*int main() {
     std::ifstream arquivo("Arquivos/poker-hand-testing.data");  // Abre o arquivo para leitura
     if (!arquivo.is_open()) {
