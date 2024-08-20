@@ -70,7 +70,7 @@ void PokerHandTreino::CriarTuplas() {
         }
         outputFileClasses << ")" << std :: endl;
     }
-
+    
     outputFileAssinaturas.close();
     outputFileClasses.close();
 
