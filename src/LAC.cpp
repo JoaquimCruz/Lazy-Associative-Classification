@@ -1,5 +1,7 @@
-#include "Training.cpp"
+#include "Training.hpp"
 #include <bits/stdc++.h>
+
+//Arrumar print dos baldes
 
 // Função que transforma uma linha de números em tuplas numeradas (combina naipe e valor)
 std::vector<std::tuple<int, int>> transformarTuplas(const std::string& linha) {
@@ -57,12 +59,12 @@ double calcularSimilaridadeJaccard(const std::vector<size_t>& linha1, const std:
 
 // Função que realiza o agrupamento das linhas semelhantes
 std::unordered_map<int, std::vector<int>> agruparLinhasSemelhantes(const std::vector<std::vector<size_t>>& hashes_linhas, double treshold) {
-    std::unordered_map<int, std::vector<int>> baldes;  // Mapa para armazenar os índices das linhas semelhantes
-    std::vector<bool> processado(hashes_linhas.size(), false);  // Marcar quais linhas já foram processadas
+    std::unordered_map<int, std::vector<int>> baldes;  
+    std::vector<bool> processado(hashes_linhas.size(), false);  
     int balde_atual_id = 0;
 
     for (size_t i = 0; i < hashes_linhas.size(); ++i) {
-        if (processado[i]) continue;  // Se a linha já foi processada, pular
+        if (processado[i]) continue;  
 
         baldes[balde_atual_id].push_back(i);
         processado[i] = true;
@@ -83,80 +85,9 @@ std::unordered_map<int, std::vector<int>> agruparLinhasSemelhantes(const std::ve
     return baldes;
 }
 
-struct pair_hash {
-    template <class T1, class T2>
-    std::size_t operator () (const std::pair<T1,T2> &p) const {
-        auto h1 = std::hash<T1>{}(p.first);
-        auto h2 = std::hash<T2>{}(p.second);
 
-        return h1 ^ h2;  
-    }
-};
 
-// Declaração da função analisarCombinacoes
-std::unordered_map<int, std::vector<int>> analisarCombinacoes(
-    const std::unordered_map<int, std::vector<int>>& baldes,
-    const std::unordered_map<size_t, std::vector<int>>& Classes) {
 
-    // Cache para evitar recomputar as interseções
-    std::unordered_map<std::pair<int, int>, std::vector<int>, pair_hash> cache;
-
-    // Mapa para armazenar os resultados
-    std::unordered_map<int, std::vector<int>> resultados;
-
-    // Percorre cada balde e suas assinaturas
-    for (const auto& [baldeId, assinaturas] : baldes) {
-        for (size_t i = 0; i < assinaturas.size(); ++i) {
-            for (size_t j = i + 1; j < assinaturas.size(); ++j) {
-                // Cria um par de assinaturas
-                std::pair<int, int> dupla = std::make_pair(assinaturas[i], assinaturas[j]);
-
-                // Verifica se o resultado dessa dupla já está no cache
-                if (cache.find(dupla) == cache.end()) {
-                    std::vector<int> linhas_comuns;
-
-                    // Intersecção das linhas em que as duas assinaturas aparecem
-                    const auto& linhas1 = baldes.at(assinaturas[i]);
-                    const auto& linhas2 = baldes.at(assinaturas[j]);
-
-                    std::set_intersection(linhas1.begin(), linhas1.end(),
-                                          linhas2.begin(), linhas2.end(),
-                                          std::back_inserter(linhas_comuns));
-
-                    // Armazena o resultado da interseção no cache
-                    cache[dupla] = linhas_comuns;
-                }
-
-                const auto& linhas_comuns = cache[dupla];
-
-                // Verifica a interseção das linhas comuns com as classes
-                for (const auto& [classeId, linhasClasse] : Classes) {
-                    std::set<int> interseccao;
-                    std::set_intersection(linhas_comuns.begin(), linhas_comuns.end(),
-                                          linhasClasse.begin(), linhasClasse.end(),
-                                          std::inserter(interseccao, interseccao.begin()));
-
-                    // Armazena o resultado no mapa de resultados
-                    resultados[classeId].push_back(interseccao.size());
-                }
-            }
-        }
-    }
-
-    return resultados;
-}
-
-/*int main() {
-    try {
-        PokerHandTreino aux("Input/poker-hand-testing.data", "Output/Assinaturas.data", "Output/Classes.data");
-        aux.CriarTuplas();
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
-
-    return 0;
-}*/
 
 int main() {
     std::ifstream arquivo("Input/poker-hand-testing.data");  // Abre o arquivo para leitura
@@ -195,5 +126,15 @@ int main() {
         std::cout << std::endl;
     }
 
+    try {
+        PokerHandTreino aux("Input/poker-hand-training.data", "Output/Assinaturas.data", "Output/Classes.data");
+        aux.CriarTuplas();
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+   
+
     return 0;
 }
+

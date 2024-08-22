@@ -34,13 +34,29 @@ void PokerHandTreino::CriarTuplas() {
     int linhaIndex = 0;
 
     while (getline(inputFile, linha)) {
-        std::vector<std::tuple<int, int>> tuplas = transformarEmTuplas(linha);
+        std::stringstream ss(linha);
+        std::string item;
+        std::vector<int> valores;
+
+        while (std::getline(ss, item, ',')) {
+            valores.push_back(std::stoi(item));
+        }
+
+        
+        int classe = valores.back();
+
+        
+        std::vector<std::tuple<int, int>> tuplas;
+        for (size_t i = 0; i < valores.size() - 1; i += 2) {
+            tuplas.push_back(std::make_tuple(valores[i], valores[i + 1]));
+        }
+
         std::vector<size_t> hashes = calcularHash(tuplas);
 
-        for (size_t i = 0; i < hashes.size() - 1; i++) {
+        for (size_t i = 0; i < hashes.size(); i++) {
             Assinaturas[hashes[i]].push_back(linhaIndex);
         }
-        size_t classe = hashes[hashes.size() - 1];
+
         Classes[classe].push_back(linhaIndex);
 
         linhaIndex++;
@@ -48,18 +64,18 @@ void PokerHandTreino::CriarTuplas() {
 
     inputFile.close();
 
+    
     for (const auto& [key, value] : Assinaturas) {
-        outputFileAssinaturas<< key << "(";
+        outputFileAssinaturas << key << "(";
         for (size_t i = 0; i < value.size(); ++i) {
             outputFileAssinaturas << value[i];
             if (i < value.size() - 1) {
-                outputFileAssinaturas<< ",";
+                outputFileAssinaturas << ",";
             }
         }
-        outputFileAssinaturas << ")" << std :: endl;
+        outputFileAssinaturas << ")" << std::endl;
     }
 
-    // Salvar a hash table de classes no arquivo de saída
     for (const auto& [key, value] : Classes) {
         outputFileClasses << key << "(";
         for (size_t i = 0; i < value.size(); ++i) {
@@ -68,13 +84,13 @@ void PokerHandTreino::CriarTuplas() {
                 outputFileClasses << ",";
             }
         }
-        outputFileClasses << ")" << std :: endl;
+        outputFileClasses << ")" << std::endl;
     }
     
     outputFileAssinaturas.close();
     outputFileClasses.close();
-
 }
+
 
 std::vector<std::tuple<int, int>> PokerHandTreino::transformarEmTuplas(const std::string& linha) const {
     std::vector<std::tuple<int, int>> tuplas;
