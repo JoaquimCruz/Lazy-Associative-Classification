@@ -155,11 +155,12 @@ vector<size_t> calcularHash(const vector<tuple<int, int>>& tuplas) {
 
 A Similaridade de Jaccard é uma métrica que mede a similaridade entre dois conjuntos. Ela é calculada como a razão entre o tamanho da interseção dos conjuntos e o tamanho da união entre eles.
 
-\[ J(A, B) = \frac{|A \cap B|}{|A \cup B|} \]
+ $`J(A, B) = |A ∩ B| / |A ∪ B|`$
 
 Onde:
-- \( |A \cap B| \) é o tamanho da interseção dos conjuntos \( A \) e \( B \).
-- \( |A \cup B| \) é o tamanho da união dos conjuntos \( A \) e \( B \).
+
+- `|A ∩ B|` é o tamanho da interseção dos conjuntos `A` e `B`.
+- `|A ∪ B|` é o tamanho da união dos conjuntos `A` e `B`.
 
 No código, a similaridade é utilizada na função de criação de baldes. Ela calcula a similaridade entre as assinaturas de duas linhas, caso a similaridade for alta, essas linhas são agrupadas no mesmo balde. Um fator imporante para a determinação de quais linhas são ou não ditas 'similares' é o threshold. O threshold é o fator que determina a equivalência mínima para uma linha ser agrupada no mesmo balde que outras.
 ```markdown
@@ -296,51 +297,47 @@ O uso da `Funçao lambda` recursiva possibilita que todas as combinações de me
 
 Para as linhas de 5 tuplas, são feitas 31 combinações, seguindo a seguinte formula matemática:
 
-\[ 
-C(n, k) = \frac{n!}{k!(n - k)!} 
-\]
-
-onde:
-
-- n é o número total de elementos no conjunto.
-- k é o número de elementos que você deseja selecionar
-
-Diante disso, as combinações feitas por linha são:
 A fórmula para combinações é dada por:
 
-**C(n, k) = \(\frac{n!}{k!(n - k)!}\)**
+$C(n, k) = \(\frac{n!}{k!(n - k)!}\)$
 
 Onde:
 
-- **n** é o número total de elementos no conjunto.
-- **k** é o número de elementos que você deseja selecionar.
+- `n` é o número total de elementos no conjunto.
+- `k` é o número de elementos que você deseja selecionar.
 
-## Combinações feitas por linha:
+Dessa maneira, as combinações feitas por linha são:
 
 1. **Combinações de 1 a 1:**
-    \[
-    C(5, 1) = \frac{5!}{1!(5 - 1)!} = \frac{5!}{1! \times 4!} = \frac{5 \times 4!}{1 \times 4!} = \frac{5}{1} = 5
-    \]
+
+   
+   $C(5, 1) = \frac{5!}{1!(5 - 1)!} = \frac{5!}{1! \times 4!} = \frac{5 \times 4!}{1 \times 4!} = \frac{5}{1} = 5$
+   
 
 2. **Combinações de 2 a 2:**
-    \[
-    C(5, 2) = \frac{5!}{2!(5 - 2)!} = \frac{5!}{2! \times 3!} = \frac{5 \times 4 \times 3!}{2 \times 1 \times 3!} = \frac{20}{2} = 10
-    \]
+
+   
+   $C(5, 2) = \frac{5!}{2!(5 - 2)!} = \frac{5!}{2! \times 3!} = \frac{5 \times 4 \times 3!}{2 \times 1 \times 3!} = \frac{20}{2} = 10$
+   
 
 3. **Combinações de 3 a 3:**
-    \[
-    C(5, 3) = \frac{5!}{3!(5 - 3)!} = \frac{5!}{3! \times 2!} = \frac{5 \times 4 \times 3!}{3! \times 2 \times 1} = \frac{20}{2} = 10
-    \]
+
+   
+   $C(5, 3) = \frac{5!}{3!(5 - 3)!} = \frac{5!}{3! \times 2!} = \frac{5 \times 4 \times 3!}{3! \times 2 \times 1} = \frac{20}{2} = 10$
+   
 
 4. **Combinações de 4 a 4:**
-    \[
-    C(5, 4) = \frac{5!}{4!(5 - 4)!} = \frac{5!}{4! \times 1!} = \frac{5 \times 4!}{4! \times 1} = 5
-    \]
+
+   
+   $C(5, 4) = \frac{5!}{4!(5 - 4)!} = \frac{5!}{4! \times 1!} = \frac{5 \times 4!}{4! \times 1} = 5$
+   
 
 5. **Combinações de 5 a 5:**
-    \[
-    C(5, 5) = \frac{5!}{5!(5 - 5)!} = \frac{5!}{5! \times 0!} = \frac{5!}{5! \times 1} = 1
-    \]
+
+   
+   $C(5, 5) = \frac{5!}{5!(5 - 5)!} = \frac{5!}{5! \times 0!} = \frac{5!}{5! \times 1} = 1$
+   
+   
 Resultando em um total de **31 combinações** por linha.
 ```markdown
 vector<int> gerarCombinacoes(const vector<size_t>& hashes, size_t k, int start,
