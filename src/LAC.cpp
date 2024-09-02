@@ -239,7 +239,7 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
     int classeMaisProvavel = -1;
 
     // Verificar combinações para tamanhos diferentes
-    for (size_t k : {5,4,3,2}) {
+    for (size_t k : {5,4,3,2,1}) {
 
         // Obter o vetor de interseções para o tamanho da combinação
         intersecoes_combinadas = gerarCombinacoes(hashes, k, 0, tabela_hash, classes, combinatorias);
@@ -251,7 +251,7 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
                 classeMaisProvavel = distance(intersecoes_combinadas.begin(), max_element(intersecoes_combinadas.begin(), intersecoes_combinadas.end()));
                 return classeMaisProvavel; // Retorna imediatamente a classe correspondente
             }
-        } else if (k == 3) {
+        } else if (k == 4) {
             int maior_intersecao = *max_element(intersecoes_combinadas.begin(), intersecoes_combinadas.end());
             if (maior_intersecao > 0) {
                 vector<int>::iterator it_max = max_element(intersecoes_combinadas.begin(), intersecoes_combinadas.end());
