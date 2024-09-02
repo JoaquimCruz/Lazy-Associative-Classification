@@ -306,31 +306,71 @@ onde:
 - k é o número de elementos que você deseja selecionar
 
 Diante disso, as combinações feitas por linha são:
-1. **Combinações de 1 a 1:**
-   \[
-   C(5, 1) = \frac{5!}{1!(5 - 1)!} = \frac{5!}{1! \times 4!} = \frac{5 \times 4!}{1 \times 4!} = \frac{5}{1} = 5
-   \]
-
-2. **Combinações de 2 a 2:**
-   \[
-   C(5, 2) = \frac{5!}{2!(5 - 2)!} = \frac{5!}{2! \times 3!} = \frac{5 \times 4 \times 3!}{2 \times 1 \times 3!} = \frac{20}{2} = 10
-   \]
-
-3. **Combinações de 3 a 3:**
-   \[
-   C(5, 3) = \frac{5!}{3!(5 - 3)!} = \frac{5!}{3! \times 2!} = \frac{5 \times 4 \times 3!}{3! \times 2 \times 1} = \frac{20}{2} = 10
-   \]
-
-4. **Combinações de 4 a 4:**
-   \[
-   C(5, 4) = \frac{5!}{4!(5 - 4)!} = \frac{5!}{4! \times 1!} = \frac{5 \times 4!}{4! \times 1} = 5
-   \]
-
-5. **Combinações de 5 a 5:**
-   \[
-   C(5, 5) = \frac{5!}{5!(5 - 5)!} = \frac{5!}{5! \times 0!} = \frac{5!}{5! \times 1} = 1
-   \]
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combinações</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .formula {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .result {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Combinações</h1>
+    <p class="formula">
+        A fórmula para combinações é dada por:
+    </p>
+    <p class="formula">
+        <strong>C(n, k) = &frac;n!{k!(n - k)!}</strong>
+    </p>
+    <p>
+        Onde:
+    </p>
+    <ul>
+        <li><strong>n</strong> é o número total de elementos no conjunto.</li>
+        <li><strong>k</strong> é o número de elementos que você deseja selecionar.</li>
+    </ul>
+    <h2>Combinações feitas por linha:</h2>
+    <div class="result">
+        <h3>1. Combinações de 1 a 1:</h3>
+        <p>
+            <strong>C(5, 1) = &frac;5!{1!(5 - 1)!} = &frac;5!{1! × 4!} = &frac;5 × 4!{1 × 4!} = &frac;5{1} = 5</strong>
+        </p>
+    </div>
+    <div class="result">
+        <h3>2. Combinações de 2 a 2:</h3>
+        <p>
+            <strong>C(5, 2) = &frac;5!{2!(5 - 2)!} = &frac;5!{2! × 3!} = &frac;5 × 4 × 3!{2 × 1 × 3!} = &frac;20{2} = 10</strong>
+        </p>
+    </div>
+    <div class="result">
+        <h3>3. Combinações de 3 a 3:</h3>
+        <p>
+            <strong>C(5, 3) = &frac;5!{3!(5 - 3)!} = &frac;5!{3! × 2!} = &frac;5 × 4 × 3!{3! × 2 × 1} = &frac;20{2} = 10</strong>
+        </p>
+    </div>
+    <div class="result">
+        <h3>4. Combinações de 4 a 4:</h3>
+        <p>
+            <strong>C(5, 4) = &frac;5!{4!(5 - 4)!} = &frac;5!{4! × 1!} = &frac;5 × 4!{4! × 1} = 5</strong>
+        </p>
+    </div>
+    <div class="result">
+        <h3>5. Combinações de 5 a 5:</h3>
+        <p>
+            <strong>C(5, 5) = &frac;5!{5!(5 - 5)!} = &frac;5!{5! × 0!} = &frac;5!{5! × 1} = 1</strong>
+        </p>
+    </div>
+</body>
 Resultando em um total de **31 combinações** por linha.
 ```markdown
 vector<int> gerarCombinacoes(const vector<size_t>& hashes, size_t k, int start,
