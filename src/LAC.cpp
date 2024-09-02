@@ -1,4 +1,17 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <tuple>
+#include <unordered_map>
+#include <unordered_set>
+#include <set>
+#include <algorithm>
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <chrono>
+#include <shared_mutex>
 using namespace std;
 using namespace std::chrono;
 
@@ -16,7 +29,7 @@ struct VectorHash {
     }
 };
 
-// Função que transforma uma linha de números em tuplas numeradas (combina naipe e valor)
+
 vector<tuple<int, int>> transformarTuplas(const string& linha) {
     vector<tuple<int, int>> tuplas;
     stringstream ss(linha);
@@ -35,7 +48,7 @@ vector<tuple<int, int>> transformarTuplas(const string& linha) {
     return tuplas;
 }
 
-// Função que calcula o hash de cada tupla (naipe e valor combinados)
+
 vector<size_t> calcularHash(const vector<tuple<int, int>>& tuplas) {
     vector<size_t> hashes;
     size_t numero_primo = 13;
@@ -69,7 +82,7 @@ double calcularSimilaridadeJaccard(const vector<size_t>& conjuntoA, const vector
 }
 
 vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, double threshold) {
-    vector<vector<int>> baldes; // Vetor de baldes para armazenar grupos de índices de linhas
+    vector<vector<int>> baldes; 
     mutex baldesMutex; // Mutex para sincronizar acesso aos baldes
 
     // Função para processar um intervalo de linhas
@@ -77,18 +90,18 @@ vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, 
         for (int i = start; i < end; ++i) {
             bool encontradoBalde = false;
 
-            // Tentar encontrar um balde adequado para a linha atual
+            
             {
                 lock_guard<mutex> lock(baldesMutex);
                 for (auto& balde : baldes) {
                     if (calcularSimilaridadeJaccard(hashesLinhas[i], hashesLinhas[balde[0]]) > threshold) {
-                        balde.push_back(i);  // Adicionar ao balde encontrado
+                        balde.push_back(i);  
                         encontradoBalde = true;
                         break;
                     }
                 }
 
-                // Se não encontrou um balde adequado, cria um novo
+                
                 if (!encontradoBalde) {
                     baldes.push_back({i});
                 }
@@ -96,7 +109,7 @@ vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, 
         }
     };
 
-    // Obter o número máximo de threads disponíveis
+    
     unsigned int numThreads = std::thread::hardware_concurrency();
     if (numThreads == 0) {
         numThreads = 8; // Valor padrão se não for possível determinar o número de núcleos
@@ -105,14 +118,14 @@ vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, 
     vector<thread> threads;
     int chunkSize = hashesLinhas.size() / numThreads;
 
-    // Dividir o trabalho entre threads
+    
     for (unsigned int t = 0; t < numThreads; ++t) {
         int start = t * chunkSize;
         int end = (t == numThreads - 1) ? hashesLinhas.size() : start + chunkSize;
         threads.emplace_back(processarIntervalo, start, end);
     }
 
-    // Esperar todas as threads terminarem
+    
     for (auto& thread : threads) {
         thread.join();
     }
@@ -120,7 +133,7 @@ vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, 
     return baldes;
 }
 
-// Função que encontra as interseções de linhas onde os elementos da combinação aparecem
+
 vector<int> encontraInterseccoes(const unordered_map<size_t, vector<int>>& tabela_hash, const vector<size_t>& combinacao) {
    
     if (combinacao.empty()) return {};
@@ -130,7 +143,7 @@ vector<int> encontraInterseccoes(const unordered_map<size_t, vector<int>>& tabel
 
     for (const auto& hash_value : combinacao) {
         auto it = tabela_hash.find(hash_value);
-        if (it == tabela_hash.end()) return {}; // Se qualquer elemento não for encontrado, retornar interseção vazia.
+        if (it == tabela_hash.end()) return {}; 
 
         if (primeiro) {
             interseccao = it->second;
@@ -139,7 +152,7 @@ vector<int> encontraInterseccoes(const unordered_map<size_t, vector<int>>& tabel
             vector<int> temp_interseccao;
             const auto& linhas_atual = it->second;
 
-            // Garantir que os vetores estejam ordenados
+            
             vector<int> ordenado_interseccao = interseccao;
             vector<int> ordenado_linhas_atual = linhas_atual;
             std::sort(ordenado_interseccao.begin(), ordenado_interseccao.end());
@@ -157,9 +170,6 @@ vector<int> encontraInterseccoes(const unordered_map<size_t, vector<int>>& tabel
         }
     }
 
-    /*for(const auto aux : interseccao){
-        cout << "Intersecao: " << aux << " " << endl;
-    }*/
 
     return interseccao;
 }
@@ -170,25 +180,20 @@ vector<int> gerarCombinacoes(const vector<size_t>& hashes, size_t k, int start,
                              unordered_map<vector<size_t>, int, VectorHash>& combinatorias) {
                  
     vector<size_t> combinacao;
-    vector<int> intersecoes_combinadas(10, 0); // Vetor para armazenar os tamanhos das interseções por classe
+    vector<int> intersecoes_combinadas(10, 0); 
 
     function<void(size_t, int)> gerar = [&](size_t start, size_t k) {
         if (combinacao.size() == k) {
-            // Verificar se a combinação já foi processada
+            
             if (combinatorias.find(combinacao) != combinatorias.end()) {
-                // Não precisamos recalcular a interseção se a combinação já foi processada
+                
                 return;
             }
 
-            // Calcular a interseção das linhas das assinaturas com as hashes no balde
+            
             vector<int> intersecao = encontraInterseccoes(tabela_hash, combinacao);
 
             if (!intersecao.empty()) {
-                /*cout << "Combinação:";
-                for (const auto& hash : combinacao) {
-                    cout << " " << hash;
-                }
-                cout << endl;*/
                 
                 // Armazena o tamanho da interseção para cada classe relevante
                 for (const auto& [classe, linhas] : classes) {
@@ -196,24 +201,11 @@ vector<int> gerarCombinacoes(const vector<size_t>& hashes, size_t k, int start,
                     set_intersection(intersecao.begin(), intersecao.end(),
                                      linhas.begin(), linhas.end(),
                                      back_inserter(intersecao_com_classe));
-
-                    /*cout << "Classe " << classe << ":";
-                    for (const auto& elem : intersecao_com_classe) {
-                        cout << " " << elem;
-                    }
-                    cout << " (Tamanho: " << intersecao_com_classe.size() << ")" << endl;*/
-
                     intersecoes_combinadas[classe] += intersecao_com_classe.size();
                 }
 
                 combinatorias[combinacao] = 1; // Marca a combinação como processada
             }
-
-            /*cout << "Intersecoes combinadas para k=" << k << ": ";
-            for (const auto& ic : intersecoes_combinadas) {
-                cout << ic << " ";
-            }
-            cout << endl;*/
 
             return;
         }
@@ -234,17 +226,16 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
                                  const unordered_map<int, vector<int>>& classes) {
 
     unordered_map<vector<size_t>, int, VectorHash> combinatorias; 
-    vector<int> combinacao_resultados(10, 0); // Vetor para armazenar a soma das interseções por classe
+    vector<int> combinacao_resultados(10, 0); 
     vector<int> intersecoes_combinadas(10, 0);
     int classeMaisProvavel = -1;
 
-    // Verificar combinações para tamanhos diferentes
     for (size_t k : {5,4,3,2,1}) {
 
-        // Obter o vetor de interseções para o tamanho da combinação
+        
         intersecoes_combinadas = gerarCombinacoes(hashes, k, 0, tabela_hash, classes, combinatorias);
 
-        // Tratamento especial para k = 5, 4 e 3
+        // Tratamento especial para k = 5, 4 
         if (k == 5) {
             int maior_intersecao = *max_element(intersecoes_combinadas.begin(), intersecoes_combinadas.end());
             if (maior_intersecao > 0) {
@@ -257,7 +248,7 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
                 vector<int>::iterator it_max = max_element(intersecoes_combinadas.begin(), intersecoes_combinadas.end());
                 int quantidade = count(intersecoes_combinadas.begin(), intersecoes_combinadas.end(), maior_intersecao);
 
-                // Se houver mais de uma classe com a maior interseção, continue a verificação
+                
                 if (quantidade > 1) {
                     continue;
                 } else {
@@ -267,13 +258,13 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
             }
         }
 
-        // Somar os tamanhos das interseções ao vetor de resultados, aplicando o peso
+        
         for (size_t i = 0; i < intersecoes_combinadas.size(); ++i) {
             combinacao_resultados[i] += intersecoes_combinadas[i];
         }
     }
 
-    // Se não houve interseções claras para k = 5, 4 ou 3, determinar a classe mais provável com base nas combinações ponderadas
+    
     classeMaisProvavel = distance(combinacao_resultados.begin(), max_element(combinacao_resultados.begin(), combinacao_resultados.end()));
 
     return classeMaisProvavel;
@@ -286,35 +277,31 @@ void processarBalde(const vector<int>& balde,
                     const unordered_map<int, vector<int>>& classes,
                     int& acertos, 
                     int& totalLinhas) {
-    auto inicio = high_resolution_clock::now();
+    
     for (int linha_idx : balde) {
         int classe_predita, classe_real;
 
-        // Trava compartilhada para leitura das assinaturas e classes
+        
         {
             shared_lock<shared_mutex> lock(mutex_balde);
             classe_predita = determinarClasseMaisProvavel(hashes_teste[linha_idx], assinaturas, classes);
             classe_real = classes_reais[linha_idx];
-        } // lock é liberado automaticamente aqui
-
-        // Trava exclusiva para escrever os resultados de acertos e total de linhas
+        } 
+        
         {
             unique_lock<shared_mutex> unique_lock(mutex_balde);
             if (classe_predita == classe_real) {
                 acertos++;
             } 
             totalLinhas++;
-        } // unique_lock é liberado automaticamente aqui
+        } 
     }
-
-    auto fim = high_resolution_clock::now();
-    auto duracao = duration_cast<seconds>(fim - inicio).count();
-    //cout << "processamento baldes: " << duracao << endl;
+    
 }
 
 int main() {
-    // Treinamento
-    //cout << "Iniciando treinamento..." << endl;
+    
+    
     ifstream arquivoTreinamento("Input/poker-hand-training.data");
     if (!arquivoTreinamento.is_open()) {
         cerr << "Erro ao abrir o arquivo de treinamento." << endl;
@@ -348,10 +335,9 @@ int main() {
 
     
 
-    //cout << "Treinamento concluído!" << endl;
+    
 
-    // Processar o arquivo de teste
-    //cout << "Iniciando teste..." << endl;
+    
     ifstream arquivoTeste("Input/poker-hand-testing.data");
     if (!arquivoTeste.is_open()) {
         cerr << "Erro ao abrir o arquivo de teste." << endl;
@@ -382,7 +368,7 @@ int main() {
 
 
     auto inicio = high_resolution_clock::now();
-    // Separar as linhas de teste em baldes
+    
     double threshold = 0.4;
     vector<vector<int>> baldes = separarEmBaldes(hashes_teste, threshold);
     
@@ -415,7 +401,7 @@ int main() {
     auto fim = high_resolution_clock::now();
     auto duracao = duration_cast<milliseconds>(fim - inicio).count();
 
-    // Resultados
+    
     cout << "Total de linhas testadas: " << totalLinhas << endl;
     cout << "Acertos: " << acertos << endl;
     cout << "Precisão: " << (double(acertos) / totalLinhas) * 100 << "%" << endl;
