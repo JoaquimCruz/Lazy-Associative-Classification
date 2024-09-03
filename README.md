@@ -1,4 +1,4 @@
-# Lazy-Associative-Classification
+# Lazy-Associative-Classification: Uma abordagem utilizando Assinaturas Hash
 
 <div style="display: inline-block;">
 <img align="center" height="20px" width="60px" src="https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white"/> 
