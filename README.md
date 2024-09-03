@@ -432,11 +432,27 @@ Para compilar e rodar o código usando MakeFile, basta seguir os seguintes coman
 
 # Autores
 <p>
-  Joaquim Cézar Santana da Cruz - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:joaquimcezar930@gmail.com">joaquimcezar930@gmail.com</a>)
+  Joaquim Cézar Santana da Cruz - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:joaquim.cruz@aluno.cefetmg.br">joaquim.cruz@aluno.cefetmg.br</a>)
 </p>
 
 <p>
   Lucas Cerqueira Portela - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:lucas.portela@aluno.cefetmg.br">lucas.portela@aluno.cefetmg.br</a>)
+</p>
+
+<p>
+  João Francisco Teles da Silva - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:joao.silva.05@aluno.cefetmg.br">joao.silva.05@aluno.cefetmg.br</a>)
+</p>
+
+<p>
+  Maíra Beatriz de Almeida Lacerda - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:lucas.portela@aluno.cefetmg.br"></a>)
+</p>
+
+<p>
+  Bruno Prado Dos Santos - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:lucas.portela@aluno.cefetmg.br"></a>)
+</p>
+
+<p>
+  Eduardo Henrique Queiroz Almeida - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:eduardo.almeida@aluno.cefetmg.br">eduardo.almeida@aluno.cefetmg.br</a>)
 </p>
 
 
