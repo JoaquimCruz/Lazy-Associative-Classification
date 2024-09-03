@@ -162,15 +162,14 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
     return classeMaisProvavel;
 }
 
-int main() {
+
+// Função de treinamento
+void treinamento(unordered_map<size_t, vector<int>>& assinaturas, unordered_map<int, vector<int>>& classes) {
     ifstream arquivoTreinamento("Input/poker-hand-training.data");
     if (!arquivoTreinamento.is_open()) {
         cerr << "Erro ao abrir o arquivo de treinamento." << endl;
-        return 1;
+        return;
     }
-
-    unordered_map<size_t, vector<int>> assinaturas;
-    unordered_map<int, vector<int>> classes;
 
     string linha_treinamento;
     int linha_id = 0;
@@ -193,14 +192,15 @@ int main() {
         linha_id++;
     }
     arquivoTreinamento.close();
+}
+
+void teste(const unordered_map<size_t, vector<int>>& assinaturas, const unordered_map<int, vector<int>>& classes) {
 
     ifstream arquivoTeste("Input/poker-hand-testing.data");
     if (!arquivoTeste.is_open()) {
         cerr << "Erro ao abrir o arquivo de teste." << endl;
-        return 1;
+        return;
     }
-
-    auto inicio = high_resolution_clock::now();
 
     vector<vector<size_t>> hashes_teste;
     string linha_testing;
@@ -222,7 +222,7 @@ int main() {
 
     if (hashes_teste.empty()) {
         cerr << "Nenhuma linha foi lida do arquivo de teste." << endl;
-        return 1;
+        return;
     }
 
     int num_threads = thread::hardware_concurrency();
@@ -234,7 +234,7 @@ int main() {
     ofstream output_file("output/output.txt");
     if (!output_file.is_open()) {
         cerr << "Erro ao abrir o arquivo de saída." << endl;
-        return 1;
+        return;
     }
     
     auto funcao_thread = [&]() {
@@ -276,6 +276,18 @@ int main() {
     output_file << "erros: " << erros_totais << endl;
     output_file << "acuracia: " << precisao * 100.0 << "%" << endl;
     output_file.close();
+
+}
+
+int main() {
+    unordered_map<size_t, vector<int>> assinaturas;
+    unordered_map<int, vector<int>> classes;
+
+    treinamento(assinaturas, classes);
+
+    auto inicio = high_resolution_clock::now();
+
+    teste(assinaturas, classes);
 
     auto fim = high_resolution_clock::now();
     auto duracao = duration_cast<milliseconds>(fim - inicio).count();
