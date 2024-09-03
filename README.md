@@ -60,7 +60,7 @@ Baseado na classe de algoritmos descritos, o objetivo do trabalho é fazer a cla
 O programa foi desenvolvido, em presente momento, para a análise de mãos de poker, retornando ao usuário, qual classe de poker a sua mão pertence. Diante disso, o algoritmo considerou as 10 classes clássicas do jogo:
 
 - High card
-- Onde pair
+- One pair
 - Two pair
 - Three of a kind
 - Straight
