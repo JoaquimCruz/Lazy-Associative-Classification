@@ -17,20 +17,25 @@
 - [Objetivo](#objetivo)
     - [Massa de dados](#massa-de-dados)
 - [Lógica de desenvolvimento](#lógica-de-desenvolvimento)
-    - [Locality Sensitive Hashing](#locality-sensitive-hashing)
+    - [Criação de Assinaturas Hash](#criação-de-assinaturas-hash)
     - [LAC](#lac)
     - [Dados](#dados)
 - [Implementação](#implementação)
     - [LAC.cpp](#laccpp)
         - [Criação de tuplas](#criação-de-tuplas)
         - [Cálculo de Assinaturas](#cálculo-de-assinaturas)
-        - [Cálculo da Similaridade de Jaccard](#cálculo-da-similaridade-de-jaccard)
-        - [Criação dos Baldes](#criação-dos-baldes)
         - [Encontrar Interseções](#encontrar-interseções)
         - [Gerar Combinações](#gerar-combinações)
         - [Determinação da classe ](#determinação-da-classe)
-        - [Processamento dos Baldes](#processamento-dos-baldes)
-        - [Input e output](#input-e-output)
+    - [Input e output](#input-e-output)
+- [Máquinas de Teste](#máquinas-de-teste)
+- [Resultados](#resultados)
+    - [Precisão Global](#precisão-global)
+    - [Tempo de processamento ](#tempo-de-processamento)
+    - [Analise dos Resultados](#analise-dos-resultados)
+- [Compilação](#compilação)
+
+
         
 
 # Introdução
@@ -70,14 +75,10 @@ Cada linha é um exemplo de uma mão composta por cinco cartas de um baralho pad
 
 # Lógica de Desenvolvimento
 
-Para a lógica do desenvolvimento do código, foi implementado, antes do processo de classificação feito pelo LAC, o processo do Locality Sensitive Hashing.Locality Sensitive Hashing (LSH) é uma técnica utilizada para encontrar aproximações de similaridade em grandes conjuntos de dados.
-## Locality Sensitive Hashing
-O objetivo do LSH é agrupar pontos semelhantes em buckets (baldes) utilizando funções de hash. Essas funções são projetadas de tal forma que a probabilidade de colisão é maior para pontos semelhantes do que para pontos distintos.
+Para a lógica do desenvolvimento do código, foi implementado, antes do processo de classificação feito pelo LAC, o processo de criação de assinaturas hash.
 
-Diante disso, o LSH foi implementado para otimizar a classificação da massa de dados, pois o pré-processamento do arquivo de input em baldes facilita a recuperação eficiente durante a classificação. Ademais, utilizando esse processo, o LAC pode rapidamente comparar uma nova mão de poker com as mãos armazenadas em buckets semelhantes, aumentando a eficiência do processo de classificação.
-
-A implementação das funções e seus respectivos detalhamentos serão discutidos na seção [Implementação](#Implementação).
-
+## Criação de Assinaturas Hash
+A criação de assinaturas Hash foi feita para melhorar a escalabilidade do algoritmo, permitindo que ele lide eficientemente com grandes volumes de dados. Ademais, o uso das assinaturas reduzem o número de colisões, o que mantém a precisão na classificação ao evitar que diferentes dados sejam tratados de maneira igal. A lógica por trás da implementação das assinaturas será melhor explicada na seção [Cálculo de Assinaturas](#cálculo-de-assinaturas).
 ## LAC
 
 A classificação da massa de dados ocorreu de maneira que cada linha fosse analisada de maneira isolada. O processo para classificação de cada linha segue os seguintes passos:
@@ -90,7 +91,7 @@ A classificação da massa de dados ocorreu de maneira que cada linha fosse anal
 - **Determinação da classe mais provável para a linha**: Após todo o processo descrito, a classe que tiver o maior suporte será a classe predita para a linha.
 
 ## Dados
-A análise dos dados inicialmente foi feita para que cada linha fosse dividida em 10 tuplas, de maneira que cada tupla fosse do tipo <coluna, valor>. Entretanto, ao analisar a massa de dados e lendo a sua documentação, foi possível aferir que a abordagemhttps://cplusplus.com/reference/sstream/stringstream/ utilizando 5 tuplas, de maneira que cada tupla fosse do tipo <naipe, valor>, seria mais coerente.
+A análise dos dados inicialmente foi feita para que cada linha fosse dividida em 10 tuplas, de maneira que cada tupla fosse do tipo <coluna, valor>. Entretanto, ao analisar a massa de dados e lendo a sua documentação, foi possível aferir que a abordagem utilizando 5 tuplas, de maneira que cada tupla fosse do tipo <naipe, valor>, seria mais coerente.
 
 Utilizando essa abordagem, foi possível reduzir o número de combinações feitas durante o processo do LAC.
 
@@ -98,12 +99,9 @@ Utilizando essa abordagem, foi possível reduzir o número de combinações feit
 
 Nessa seção serão abordadas as funções do código, bem como suas implementações e lógicas.
 
-O código é dividido em 2 arquivos .cpp, o primeiro faz a parte do treinamento e o segundo segue para o teste e a classificação das linhas. 
-## Training.cpp
-
 ## LAC.cpp
 
-O arquivo `LAC.cpp` implementa o LSH e o LAC, fazendo a classificação das linhas. Suas funções são: 
+O arquivo `LAC.cpp` implementa a lógica das assinaturas Hash e o LAC, fazendo a classificação das linhas. Suas funções são: 
 
 ### Criação de tuplas
 A função `transformarTuplas` converte uma linha que representa uma mão de poker para tuplas no formato <naipe, carta>. A função utiliza um <a href="https://cplusplus.com/reference/sstream/stringstream/" target="_blank">stringstream</a> para extrair e converter cada par de valores na linha, organizando-os em uma estrutura que facilita o processamento subsequente, como hashing e comparação.
@@ -156,112 +154,10 @@ vector<size_t> calcularHash(const vector<tuple<int, int>>& tuplas) {
     return hashes;
 }
 ```
-### Cálculo da Similaridade de Jaccard
-
-A Similaridade de Jaccard é uma métrica que mede a similaridade entre dois conjuntos. Ela é calculada como a razão entre o tamanho da interseção dos conjuntos e o tamanho da união entre eles.
-
- $`J(A, B) = |A ∩ B| / |A ∪ B|`$
-
-Onde:
-
-- `|A ∩ B|` é o tamanho da interseção dos conjuntos `A` e `B`.
-- `|A ∪ B|` é o tamanho da união dos conjuntos `A` e `B`.
-
-No código, a similaridade é utilizada na função de criação de baldes. Ela calcula a similaridade entre as assinaturas de duas linhas, caso a similaridade for alta, essas linhas são agrupadas no mesmo balde. Um fator imporante para a determinação de quais linhas são ou não ditas 'similares' é o threshold. O threshold é o fator que determina a equivalência mínima para uma linha ser agrupada no mesmo balde que outras.
-
-O custo computacional da função é `O(n + m)`, onde `m` é o tamanho do `conjuntoA` e `n` é o tamanho do `conjuntoB`.
-```markdown
-double calcularSimilaridadeJaccard(const vector<size_t>& conjuntoA, const vector<size_t>& conjuntoB) {
-    unordered_set<size_t> setA(conjuntoA.begin(), conjuntoA.end());
-    unordered_set<size_t> intersecao;
-    unordered_set<size_t> uniao(setA.begin(), setA.end());
-
-    for (const auto& elem : conjuntoB) {
-        if (setA.find(elem) != setA.end()) {
-            intersecao.insert(elem);
-        }
-        uniao.insert(elem);
-    }
-
-    double similaridade = static_cast<double>(intersecao.size()) / uniao.size();
-
-    return similaridade;
-}
-```
-### Criação dos Baldes
-
-A função `separarEmBaldes` organiza um conjunto de linhas, representadas por vetores de hashes, em grupos chamados "baldes", com base na similaridade de Jaccard. A função usa programação paralela para processar grandes volumes de dados de maneira eficiente. O processo começa dividindo as linhas entre várias threads, cada uma responsável por processar um intervalo específico. Para cada linha, a função tenta encontrar um balde existente onde a similaridade de Jaccard entre os hashes da linha e os do balde seja maior que o limiar (`threshold`). Se uma linha não encontrar um balde adequado, um novo balde é criado.
-
-A função utiliza um `mutex` para garantir que o acesso ao vetor de baldes seja sincronizado entre as threads, evitando condições de corrida. Ademais, utiliza o número máximo de threads disponíveis na máquina, determinado automaticamente, para dividir o trabalho e processar as linhas em paralelo, o que acelera significativamente a execução. 
-
-Após o processamento, todas as threads são sincronizadas, e os baldes resultantes são retornados, contendo os índices das linhas agrupadas por similaridade. Esse método é essencial para lidar com grandes datasets, garantindo que dados semelhantes sejam agrupados de forma eficiente para análise subsequente.
-
-A complexidade da função é $O(L \times b \times (m + n))$, onde:
-
-- **L** é o número de linhas.
-- **b** é o número de baldes (no pior caso, pode ser **L**).
-- **m + n** é o custo de calcular a similaridade Jaccard.
-
-Para o pior caso, têm-se que o número de linhas será igual ao número de baldes, ou seja, o custo computcional será de $O(L ^2 \times (m + n))$
-
-```markdown
-vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, double threshold) {
-    vector<vector<int>> baldes; // Vetor de baldes para armazenar grupos de índices de linhas
-    mutex baldesMutex; // Mutex para sincronizar acesso aos baldes
-
-    // Função para processar um intervalo de linhas
-    auto processarIntervalo = [&](int start, int end) {
-        for (int i = start; i < end; ++i) {
-            bool encontradoBalde = false;
-
-            // Tentar encontrar um balde adequado para a linha atual
-            {
-                lock_guard<mutex> lock(baldesMutex);
-                for (auto& balde : baldes) {
-                    if (calcularSimilaridadeJaccard(hashesLinhas[i], hashesLinhas[balde[0]]) > threshold) {
-                        balde.push_back(i);  // Adicionar ao balde encontrado
-                        encontradoBalde = true;
-                        break;
-                    }
-                }
-
-                // Se não encontrou um balde adequado, cria um novo
-                if (!encontradoBalde) {
-                    baldes.push_back({i});
-                }
-            }
-        }
-    };
-
-    // Obter o número máximo de threads disponíveis
-    unsigned int numThreads = std::thread::hardware_concurrency();
-    if (numThreads == 0) {
-        numThreads = 8; // Valor padrão se não for possível determinar o número de núcleos
-    }
-
-    vector<thread> threads;
-    int chunkSize = hashesLinhas.size() / numThreads;
-
-    // Dividir o trabalho entre threads
-    for (unsigned int t = 0; t < numThreads; ++t) {
-        int start = t * chunkSize;
-        int end = (t == numThreads - 1) ? hashesLinhas.size() : start + chunkSize;
-        threads.emplace_back(processarIntervalo, start, end);
-    }
-
-    // Esperar todas as threads terminarem
-    for (auto& thread : threads) {
-        thread.join();
-    }
-
-    return baldes;
-}
-```
-
 ### Encontrar Interseções
 A função `encontraInterseccoes` busca identificar as linhas de dados que contêm todos os elementos de uma combinação de cartas, cruzando informações em uma tabela hash. Para cada combinação de hash, a função encontra as linhas correspondentes e calcula a interseção dessas linhas, retornando as linhas comuns a todos os elementos da combinação.
 
-A função utiliza <a href="https://en.cppreference.com/w/cpp/algorithm/set_intersection" target="_blank">set_intersection</a> para encontrar a interseção entre as linhas analisadas. O resultado da interseção é salvo em um vetor utilizando <a href="https://en.cppreference.com/w/cpp/utility/move" target="_blank">std :: move</a>. A utilização do move possibilita que os dados sejam "movidos" para o vetor ao inés de copiados. Foi utlizado essa abordagem para otimizar o desempenho da função, com o intuito de evitar a cópia desnecessária do vector `temp_interseccao`.
+A função utiliza <a href="https://en.cppreference.com/w/cpp/algorithm/set_intersection" target="_blank">set_intersection</a> para encontrar a interseção entre as linhas analisadas. O resultado da interseção é salvo em um vetor utilizando <a href="https://en.cppreference.com/w/cpp/utility/move" target="_blank">std :: move</a>. A utilização do move possibilita que os dados sejam "movidos" para o vetor ao invés de copiados. Foi utlizado essa abordagem para otimizar o desempenho da função, com o intuito de evitar a cópia desnecessária do vector `temp_interseccao`.
 
 Ademais, é importante ressaltar que a ordenação do vetor foi apenas possível por conta da utilização da abordagem de 5 tuplas <naipe, valor>. Essa abordagem faz com que a ordem das cartas não importe, pois a ordem das cartas na mão não altera o quão boa ou ruim uma mão de poker é.
 
@@ -410,111 +306,39 @@ vector<int> gerarCombinacoes(const vector<size_t>& hashes, size_t k, int start,
 ```
 ### Determinação da classe 
 
-A função `determinarClasseMaisProvavel` tem como objetivo identificar a classe mais provável associada a uma combinação de valores de hash, as combinações e avaliando as interseções entre as linhas de dados associadas. A função utiliza uma estrutura de dados `unordered_map` para armazenar combinações previamente processadas, evitando cálculos redundantes e acelerando a execução.
+A função `determinarClasseMaisProvavel` tem como objetivo identificar a classe mais provável associada a uma combinação de valores de hash, avaliando as interseções entre as linhas de dados associadas. A função utiliza uma estrutura de dados `unordered_map` para armazenar combinações previamente processadas, evitando cálculos redundantes e acelerando a execução.
 
-O processo se inicia fazendo as comparações 5 a 5. Como foi utilizada a abordagem de 5 tuplas <naipe,valor>, caso for encontrada alguma interseção de 5 elementos o código já retornará que a classe em que ocorreu a interseção é a classe da linha. 
 
-Para as interseções de 4 a 4, o código faz um processo similar. Caso haja mais de uma classe que possua interseções de 4 a 4, é feito uma análise do suporte de cada classe para essas combinações em específico, e a classe com maior suporte é referida como a classe da linha. 
-
-Após essas duas análises, caso não haja interseções de (5 a 5) e (4 a 4), o código faz todas as outras combinações e faz o cálculo padrão de suporte e confiança, descrito na seção [LAC](#lac).
-
-Essa abordagem foi tomada pela necessidade de balancear o resultado de predição de classes. O arquivo de treino em que o código teste se baseia para preditar a classe é composto predominantemente pelas classes 0 (High card) e 1 (One pair), pois elas são as mões mais comuns do jogo. Assim, caso não ocorra esse tratamento, o código apenas varia entre essas duas classes para a classiicação de cada linha.
-
- Em vista disso, a abordagem de aplicar pesos às interseções permite que o algoritmo seja flexível e robusto na classificação, garantindo que a classe mais provável seja determinada com base em uma análise abrangente dos dados disponíveis.
 ```markdown
-int determinarClasseMaisProvavel(const vector<size_t>& hashes, 
+int determinarClasseMaisProvavel(const vector<size_t>& hashes,
                                  const unordered_map<size_t, vector<int>>& tabela_hash,
                                  const unordered_map<int, vector<int>>& classes) {
 
-    unordered_map<vector<size_t>, int, VectorHash> combinatorias; 
-    vector<int> combinacao_resultados(10, 0); 
+    unordered_map<vector<size_t>, int, VectorHash> combinatorias;
+    vector<int> combinacao_resultados(10, 0);
     vector<int> intersecoes_combinadas(10, 0);
     int classeMaisProvavel = -1;
 
-    for (size_t k : {5,4,3,2,1}) {
-
-        
+    for (size_t k : {5, 4, 3, 2, 1}) {
         intersecoes_combinadas = gerarCombinacoes(hashes, k, 0, tabela_hash, classes, combinatorias);
 
-        // Tratamento especial para k = 5, 4 
-        if (k == 5) {
-            int maior_intersecao = *max_element(intersecoes_combinadas.begin(), intersecoes_combinadas.end());
-            if (maior_intersecao > 0) {
-                classeMaisProvavel = distance(intersecoes_combinadas.begin(), max_element(intersecoes_combinadas.begin(), intersecoes_combinadas.end()));
-                return classeMaisProvavel; // Retorna imediatamente a classe correspondente
-            }
-        } else if (k == 4) {
-            int maior_intersecao = *max_element(intersecoes_combinadas.begin(), intersecoes_combinadas.end());
-            if (maior_intersecao > 0) {
-                vector<int>::iterator it_max = max_element(intersecoes_combinadas.begin(), intersecoes_combinadas.end());
-                int quantidade = count(intersecoes_combinadas.begin(), intersecoes_combinadas.end(), maior_intersecao);
 
-                
-                if (quantidade > 1) {
-                    continue;
-                } else {
-                    classeMaisProvavel = distance(intersecoes_combinadas.begin(), it_max);
-                    return classeMaisProvavel;
-                }
-            }
-        }
-
-        
         for (size_t i = 0; i < intersecoes_combinadas.size(); ++i) {
             combinacao_resultados[i] += intersecoes_combinadas[i];
         }
     }
 
-    
     classeMaisProvavel = distance(combinacao_resultados.begin(), max_element(combinacao_resultados.begin(), combinacao_resultados.end()));
 
     return classeMaisProvavel;
 }
 ```
-### Processamento dos Baldes
-
-A função `processarBalde` é responsável por processar um conjunto de linhas agrupadas em um balde, avaliando a classe predita para cada linha e comparando-a com a classe real para determinar a precisão do modelo. 
-
-Para cada linha no balde, a função determina a classe mais provável. A determinação da classe é feita dentro de um bloco protegido por uma `shared_lock`, que permite leitura simultânea segura das assinaturas e classes por múltiplas threads. Após determinar a classe predita, a função compara essa predição com a classe real da linha. Se ambas forem iguais, o contador de acertos é incrementado. O total de linhas processadas também é atualizado. Ambas as operações de escrita são realizadas dentro de um bloco protegido por um `unique_lock`, que garante que apenas uma thread possa modificar os valores de `acertos` e `totalLinhas` por vez.
-```markdown
-void processarBalde(const vector<int>& balde, 
-                    const vector<vector<size_t>>& hashes_teste,
-                    const unordered_map<size_t, vector<int>>& assinaturas,
-                    const unordered_map<int, vector<int>>& classes,
-                    int& acertos, 
-                    int& totalLinhas) {
-    
-    for (int linha_idx : balde) {
-        int classe_predita, classe_real;
-
-        
-        {
-            shared_lock<shared_mutex> lock(mutex_balde);
-            classe_predita = determinarClasseMaisProvavel(hashes_teste[linha_idx], assinaturas, classes);
-            classe_real = classes_reais[linha_idx];
-        } 
-        
-        {
-            unique_lock<shared_mutex> unique_lock(mutex_balde);
-            if (classe_predita == classe_real) {
-                acertos++;
-            } 
-            totalLinhas++;
-        } 
-    }
-    
-}
-```
-### Input e output
+## Input e output
 
 Arquivos de entrada:
 
 - **poker-hand-training.data**: Contém os dados de treinamento para o modelo, onde cada linha representa uma mão de poker com suas cartas e a classe correspondente.
 - **poker-hand-testing.data**: Contém os dados de teste, que serão usados para avaliar a precisão do modelo.
-
-Arquivo de saída: 
-
-- **Resultados.txt**: Armazena os resultados finais da análise, incluindo métricas de precisão e outros dados relevantes.
 
 Formatação dos arquivos de entrada:
 ```markdown
@@ -524,6 +348,25 @@ Formatação dos arquivos de entrada:
 1,4,3,13,2,13,2,1,3,6,1
 3,10,2,7,1,2,2,11,4,9,0
 ```
+
+Arquivo de saída: 
+
+- **Resultados.txt**: Armazena os resultados finais da análise, incluindo métricas de precisão e outros dados relevantes.
+
+Formatação do arquivo de saída:
+
+```Markdown
+Linha 995: Classe atribuída: 1
+Linha 994: Classe atribuída: 1
+Linha 996: Classe atribuída: 0
+Linha 997: Classe atribuída: 0
+Linha 998: Classe atribuída: 1
+Linha 1000: Classe atribuída: 0
+Linha 999: Classe atribuída: 0
+acertos: 775
+erros: 225
+acuracia: 77.5%
+```
 # Máquinas de Teste
 
 Para testagem do projeto, foram utilizadas 3 máquinas que rodadaram o cógido em sistema operacional Linux ou no Windows Subsystem for Linux (WSL).
@@ -532,9 +375,56 @@ Para testagem do projeto, foram utilizadas 3 máquinas que rodadaram o cógido e
 |------------------|------------------------|-------------|---------------------|
 | Intel inspiron 15 5000 |Intel(R) Core(TM) i7-11390H    | 16 GB       | Windows 11 Pro (WSL)     |
 | Lenovo ideaPad 3i    | AMD Ryzen 7 5700U       | 12 GB        | Ubuntu 22.02        |
-| PC de mesa       | AMS Ryzen 5600X                | 24 GB        | Ubunto 22.02       |
+| PC        | AMS Ryzen 5600X                | 24 GB        | Ubuntu 24.04       |
 
 # Resultados
 
+## Precisão Global
+
+A precisão geral obtida pelo modelo foi de `81.2%`. Esse resultado foi calculado com base em `1.000 linhas` de teste, onde o modelo acertou `812` previsões e errou `188`. A precisão alcançada mostra uma melhoria considerável em relação aos resultados iniciais, sugerindo que o modelo conseguiu aprender a distinguir, em algum grau, entre as classes "0" e "1". No entanto, é importante notar que o conjunto de treinamento utilizado continha apenas essas duas classes, o que significa que o modelo foi forçado a fazer uma escolha binária entre elas. Embora a precisão seja razoável, o desempenho do modelo ainda é restrito pela natureza simplificada dos dados de treinamento.
+
+Como não foi possível modificar o `LAC` neste trabalho, não houve oportunidade para ajustar o modelo e melhorar sua performance de forma mais equilibrada entre todas as classes.
 
 
+
+## Tempo de processamento 
+
+O tempo de processamento para `1000 linhas` foi em média `750 milissegundos`, e para `1000 linhas` foi em média `5.5 segundos`. Esse desempenho é considerado rápido e adequado, especialmente considerando a complexidade dos cálculos envolvidos, como operações de combinação e interseção. O algoritmo mostra uma boa eficiência em termos de tempo, permitindo que grandes volumes de dados sejam processados rapidamente. Esse tempo de processamento sugere que o modelo é capaz de lidar com operações intensivas sem comprometer significativamente a velocidade, apresentando um crescimento exponencial em relação a massa de dados. 
+
+Compilação para 100 linhas:
+
+```Markdown
+g++ -Wall -Wextra  -Iinclude/ -lstdc++ -lm -o ./build//app ./build/objects/src/LAC.o
+././build/app
+Total de linhas: 100  //Compilação para 100 linhas
+acertos: 85
+erros: 15
+acuracia: 85%
+Tempo de execução: 675ms
+```
+
+Compilação para 1000 linhas:
+
+```Markdown
+g++ -Wall -Wextra  -Iinclude/ -lstdc++ -lm -o ./build//app ./build/objects/src/LAC.o
+././build/app
+Total de linhas: 1000  //Compilação para 1000 linhas
+acertos: 812
+erros: 188
+acuracia: 81.2%
+Tempo de execução: 5893ms
+```
+## Analise dos Resultados
+
+A análise dos resultados indica que o desempenho do código foi significativamente influenciado pelos dados fornecidos pelo banco de dados. O treinamento com apenas duas classes limitou as capacidades do modelo, forçando-o a fazer escolhas binárias que nem sempre se alinharam corretamente com os dados de teste. Além disso, a precisão de `81.2%` revela que, embora o modelo tenha aprendido algo, ele ainda é propenso a erros, o que pode ser atribuído tanto à natureza dos dados quanto à simplicidade do algoritmo. A melhoria do desempenho poderia ser alcançada com ajustes no `LAC`, mas essas alterações não eram permitidas neste trabalho, deixando o modelo restrito à sua implementação original.
+
+
+# Compilação
+
+Para compilar e rodar o código em ambiente Linux, basta seguir os seguintes comandos.
+| Comando                |  Função                                                                                               |                     
+| -----------------------| ------------------------------------------------------------------------------------------------------|
+|  make clean          | Apaga a última compilação realizada contida na pasta build                                            |
+|  make                | Executa a compilação do programa utilizando o gcc, e o resultado vai para a pasta build               |
+|  make run            | Executa o programa da pasta build após a realização da compilação                                     |
+|make r| Faz os três processos descritos acima em apenas um comando
