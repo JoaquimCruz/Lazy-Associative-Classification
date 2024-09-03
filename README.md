@@ -444,7 +444,7 @@ Para compilar e rodar o código usando MakeFile, basta seguir os seguintes coman
 </p>
 
 <p>
-  Maíra Beatriz de Almeida Lacerda - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:maira@aluno.cefetmg.br"></a>)
+  Maíra Beatriz de Almeida Lacerda - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:maira@aluno.cefetmg.br">maira@aluno.cefetmg.br</a>)
 </p>
 
 <p>
