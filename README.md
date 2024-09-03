@@ -431,7 +431,7 @@ Para compilar e rodar o código em ambiente Linux, basta seguir os seguintes com
 
 # Autores
 <p>
-  Joaquim Cézar Santana da Cruz - Graduando em Engenharia da Computação pelo (<a href="mailto:https://www.cefetmg.br">CEFET-MG</a>). E-mail: (<a href="mailto:joaquimcezar930@gmail.com">joaquimcezar930@gmail.com</a>)
+  Joaquim Cézar Santana da Cruz - Graduando em Engenharia da Computação pelo <a href=https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contanto: (<a href="mailto:joaquimcezar930@gmail.com">joaquimcezar930@gmail.com</a>)
 </p>
 
 
