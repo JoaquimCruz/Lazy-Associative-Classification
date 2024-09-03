@@ -276,7 +276,7 @@ void processarBalde(const vector<int>& balde,
                     const unordered_map<size_t, vector<int>>& assinaturas,
                     const unordered_map<int, vector<int>>& classes,
                     int& acertos, 
-                    int& totalLinhas) {
+                    int& totalLinhas, int& erros) {
     
     for (int linha_idx : balde) {
         int classe_predita, classe_real;
@@ -292,7 +292,9 @@ void processarBalde(const vector<int>& balde,
             unique_lock<shared_mutex> unique_lock(mutex_balde);
             if (classe_predita == classe_real) {
                 acertos++;
-            } 
+            } else{
+                erros++;
+            }
             totalLinhas++;
         } 
     }
@@ -376,7 +378,7 @@ int main() {
     
 
     int totalLinhas = 0;
-    int acertos = 0;
+    int acertos = 0, erros = 0;
 
     int num_threads = thread::hardware_concurrency();
     vector<thread> thread_pool(num_threads);
@@ -387,7 +389,7 @@ int main() {
     while (true) {
         int balde_idx = next_balde.fetch_add(1);
         if (balde_idx >= baldes.size()) break;
-        processarBalde(baldes[balde_idx], hashes_teste, assinaturas, classes, acertos, totalLinhas);
+        processarBalde(baldes[balde_idx], hashes_teste, assinaturas, classes, acertos, totalLinhas, erros);
     }
     };
 
@@ -404,6 +406,7 @@ int main() {
     
     cout << "Total de linhas testadas: " << totalLinhas << endl;
     cout << "Acertos: " << acertos << endl;
+    cout << "Erros: " << erros << endl;
     cout << "Precisão: " << (double(acertos) / totalLinhas) * 100 << "%" << endl;
     cout << "Tempo de execução: " << duracao << " milisegundos" << endl;
 

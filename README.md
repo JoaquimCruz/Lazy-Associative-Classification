@@ -30,6 +30,7 @@
         - [Gerar Combinações](#gerar-combinações)
         - [Determinação da classe ](#determinação-da-classe)
         - [Processamento dos Baldes](#processamento-dos-baldes)
+        - [Input e output](#input-e-output)
         
 
 # Introdução
@@ -106,6 +107,7 @@ O arquivo `LAC.cpp` implementa o LSH e o LAC, fazendo a classificação das linh
 
 ### Criação de tuplas
 A função `transformarTuplas` converte uma linha que representa uma mão de poker para tuplas no formato <naipe, carta>. A função utiliza um <a href="https://cplusplus.com/reference/sstream/stringstream/" target="_blank">stringstream</a> para extrair e converter cada par de valores na linha, organizando-os em uma estrutura que facilita o processamento subsequente, como hashing e comparação.
+A função possui custo computacional de `O(n)`.
 
 ```markdown
 vector<tuple<int, int>> transformarTuplas(const string& linha) {
@@ -135,6 +137,9 @@ A função `calcularHash` tranforma cada tupla da linha em uma assinatura hash �
 Foi utilizado essa fórmula com o número primo para minimizar o número de colisões. O uso de um número primo na multiplicação ajuda a distribuir os valores de hash de maneira mais uniforme. Isso é importante para evitar padrões repetitivos e agrupamentos que poderiam levar a colisões de hash.
 
 Ao final da função, as linhas que antes eram formadas por tuplas <naipe, valor> são agora formadas por assinaturas únicas que representam cada uma das 52 cartas de um baralho convencional.
+
+A função possui custo computacional de `O(n)`.
+
 ```markdown
 vector<size_t> calcularHash(const vector<tuple<int, int>>& tuplas) {
     vector<size_t> hashes;
@@ -163,6 +168,8 @@ Onde:
 - `|A ∪ B|` é o tamanho da união dos conjuntos `A` e `B`.
 
 No código, a similaridade é utilizada na função de criação de baldes. Ela calcula a similaridade entre as assinaturas de duas linhas, caso a similaridade for alta, essas linhas são agrupadas no mesmo balde. Um fator imporante para a determinação de quais linhas são ou não ditas 'similares' é o threshold. O threshold é o fator que determina a equivalência mínima para uma linha ser agrupada no mesmo balde que outras.
+
+O custo computacional da função é `O(n + m)`, onde `m` é o tamanho do `conjuntoA` e `n` é o tamanho do `conjuntoB`.
 ```markdown
 double calcularSimilaridadeJaccard(const vector<size_t>& conjuntoA, const vector<size_t>& conjuntoB) {
     unordered_set<size_t> setA(conjuntoA.begin(), conjuntoA.end());
@@ -188,6 +195,15 @@ A função `separarEmBaldes` organiza um conjunto de linhas, representadas por v
 A função utiliza um `mutex` para garantir que o acesso ao vetor de baldes seja sincronizado entre as threads, evitando condições de corrida. Ademais, utiliza o número máximo de threads disponíveis na máquina, determinado automaticamente, para dividir o trabalho e processar as linhas em paralelo, o que acelera significativamente a execução. 
 
 Após o processamento, todas as threads são sincronizadas, e os baldes resultantes são retornados, contendo os índices das linhas agrupadas por similaridade. Esse método é essencial para lidar com grandes datasets, garantindo que dados semelhantes sejam agrupados de forma eficiente para análise subsequente.
+
+A complexidade da função é $O(L \times b \times (m + n))$, onde:
+
+- **L** é o número de linhas.
+- **b** é o número de baldes (no pior caso, pode ser **L**).
+- **m + n** é o custo de calcular a similaridade Jaccard.
+
+Para o pior caso, têm-se que o número de linhas será igual ao número de baldes, ou seja, o custo computcional será de $O(L ^2 \times (m + n))$
+
 ```markdown
 vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, double threshold) {
     vector<vector<int>> baldes; // Vetor de baldes para armazenar grupos de índices de linhas
@@ -248,6 +264,11 @@ A função `encontraInterseccoes` busca identificar as linhas de dados que cont�
 A função utiliza <a href="https://en.cppreference.com/w/cpp/algorithm/set_intersection" target="_blank">set_intersection</a> para encontrar a interseção entre as linhas analisadas. O resultado da interseção é salvo em um vetor utilizando <a href="https://en.cppreference.com/w/cpp/utility/move" target="_blank">std :: move</a>. A utilização do move possibilita que os dados sejam "movidos" para o vetor ao inés de copiados. Foi utlizado essa abordagem para otimizar o desempenho da função, com o intuito de evitar a cópia desnecessária do vector `temp_interseccao`.
 
 Ademais, é importante ressaltar que a ordenação do vetor foi apenas possível por conta da utilização da abordagem de 5 tuplas <naipe, valor>. Essa abordagem faz com que a ordem das cartas não importe, pois a ordem das cartas na mão não altera o quão boa ou ruim uma mão de poker é.
+
+ Ao analisar assintóticamente a função, para cada interseção subsequente, o custo computacional é $O(m \log m + n \log n + m + n)$, pois para ordenar um vetor de tamanho $m$ ou $n$ o custo é  $O(m \log m)$ ou $O(n \log n)$. Para calcular a interseção dos dois vetores é $O(m + n)$. Portanto, para cada interseção subsequente, o custo é $O(m \log m + n \log n + m + n)$.
+
+Considerando $k$ como o número de elementos na combinação, e que $m$ e $n$ são iguais, o custo computacional total da função será de: $O(k \times m \log m)$.
+
 ```markdown
 vector<int> encontraInterseccoes(const unordered_map<size_t, vector<int>>& tabela_hash, const vector<size_t>& combinacao) {
    
@@ -299,7 +320,7 @@ Para as linhas de 5 tuplas, são feitas 31 combinações, seguindo a seguinte fo
 
 A fórmula para combinações é dada por:
 
-$C(n, k) = \(\frac{n!}{k!(n - k)!}\)$
+$C(n, k) = \frac{n!}{k!(n - k)!}$
 
 Onde:
 
@@ -484,3 +505,36 @@ void processarBalde(const vector<int>& balde,
     
 }
 ```
+### Input e output
+
+Arquivos de entrada:
+
+- **poker-hand-training.data**: Contém os dados de treinamento para o modelo, onde cada linha representa uma mão de poker com suas cartas e a classe correspondente.
+- **poker-hand-testing.data**: Contém os dados de teste, que serão usados para avaliar a precisão do modelo.
+
+Arquivo de saída: 
+
+- **Resultados.txt**: Armazena os resultados finais da análise, incluindo métricas de precisão e outros dados relevantes.
+
+Formatação dos arquivos de entrada:
+```markdown
+1,1,1,13,2,4,2,3,1,12,0  // O ultimo elemento da linha
+3,12,3,2,3,11,4,5,2,5,1     representa a classe //
+1,9,4,6,1,4,3,2,3,9,1
+1,4,3,13,2,13,2,1,3,6,1
+3,10,2,7,1,2,2,11,4,9,0
+```
+# Máquinas de Teste
+
+Para testagem do projeto, foram utilizadas 3 máquinas que rodadaram o cógido em sistema operacional Linux ou no Windows Subsystem for Linux (WSL).
+
+| Máquina | Processador            | Memória RAM | Sistema Operacional |
+|------------------|------------------------|-------------|---------------------|
+| Intel inspiron 15 5000 |Intel(R) Core(TM) i7-11390H    | 16 GB       | Windows 11 Pro (WSL)     |
+| Lenovo ideaPad 3i    | AMD Ryzen 7 5700U       | 12 GB        | Ubuntu 22.02        |
+| PC de mesa       | AMS Ryzen 5600X                | 24 GB        | Ubunto 22.02       |
+
+# Resultados
+
+
+
