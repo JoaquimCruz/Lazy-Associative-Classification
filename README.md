@@ -363,9 +363,10 @@ Linha 997: Classe atribuída: 0
 Linha 998: Classe atribuída: 1
 Linha 1000: Classe atribuída: 0
 Linha 999: Classe atribuída: 0
-acertos: 775
-erros: 225
-acuracia: 77.5%
+acertos: 812
+erros: 188
+acuracia: 81.2%
+Tempo de execução: 5893ms
 ```
 # Máquinas de Teste
 
@@ -421,7 +422,7 @@ A análise dos resultados indica que o desempenho do código foi significativame
 
 # Compilação
 
-Para compilar e rodar o código em ambiente Linux, basta seguir os seguintes comandos.
+Para compilar e rodar o código usando MakeFile, basta seguir os seguintes comandos.
 | Comando                |  Função                                                                                               |                     
 | -----------------------| ------------------------------------------------------------------------------------------------------|
 |  make clean          | Apaga a última compilação realizada contida na pasta build                                            |
