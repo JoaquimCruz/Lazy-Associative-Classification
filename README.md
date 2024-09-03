@@ -434,4 +434,9 @@ Para compilar e rodar o código em ambiente Linux, basta seguir os seguintes com
   Joaquim Cézar Santana da Cruz - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:joaquimcezar930@gmail.com">joaquimcezar930@gmail.com</a>)
 </p>
 
+<p>
+  Lucas Cerqueira Portela - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:lucas.portela@aluno.cefetmg.br">lucas.portela@aluno.cefetmg.br</a>)
+</p>
+
+
 
