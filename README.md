@@ -427,4 +427,11 @@ Para compilar e rodar o código em ambiente Linux, basta seguir os seguintes com
 |  make clean          | Apaga a última compilação realizada contida na pasta build                                            |
 |  make                | Executa a compilação do programa utilizando o gcc, e o resultado vai para a pasta build               |
 |  make run            | Executa o programa da pasta build após a realização da compilação                                     |
-|make r| Faz os três processos descritos acima em apenas um comando
+|make r| Faz os três processos descritos acima em apenas um comando|
+
+# Autores
+<p>
+  Joaquim Cézar Santana da Cruz - Graduando em Engenharia da Computação pelo (<a href="mailto:https://www.cefetmg.br">CEFET-MG</a>). E-mail: (<a href="mailto:joaquimcezar930@gmail.com">joaquimcezar930@gmail.com</a>)
+</p>
+
+
