@@ -448,7 +448,7 @@ Para compilar e rodar o código usando MakeFile, basta seguir os seguintes coman
 </p>
 
 <p>
-  Bruno Prado Dos Santos - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:bruno.santos@aluno.cefetmg.br">Bruno.santos@aluno.cefetmg.br</a>)
+  Bruno Prado Dos Santos - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:bruno.santos@aluno.cefetmg.br">bruno.santos@aluno.cefetmg.br</a>)
 </p>
 
 <p>
