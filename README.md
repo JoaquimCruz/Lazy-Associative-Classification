@@ -366,7 +366,6 @@ Linha 999: Classe atribuída: 0
 acertos: 812
 erros: 188
 acuracia: 81.2%
-Tempo de execução: 5893ms
 ```
 # Máquinas de Teste
 
@@ -390,7 +389,7 @@ Como não foi possível modificar o `LAC` neste trabalho, não houve oportunidad
 
 ## Tempo de processamento 
 
-O tempo de processamento para `1000 linhas` foi em média `750 milissegundos`, e para `1000 linhas` foi em média `5.5 segundos`. Esse desempenho é considerado rápido e adequado, especialmente considerando a complexidade dos cálculos envolvidos, como operações de combinação e interseção. O algoritmo mostra uma boa eficiência em termos de tempo, permitindo que grandes volumes de dados sejam processados rapidamente. Esse tempo de processamento sugere que o modelo é capaz de lidar com operações intensivas sem comprometer significativamente a velocidade, apresentando um crescimento exponencial em relação a massa de dados. 
+O tempo de processamento para `100 linhas` foi em média `346 milissegundos`, e para `1000 linhas` foi em média `3.5 segundos`. Esse desempenho é considerado rápido e adequado, especialmente considerando a complexidade dos cálculos envolvidos, como operações de combinação e interseção. O algoritmo mostra uma boa eficiência em termos de tempo, permitindo que grandes volumes de dados sejam processados rapidamente. Esse tempo de processamento sugere que o modelo é capaz de lidar com operações intensivas sem comprometer significativamente a velocidade, apresentando um crescimento exponencial em relação a massa de dados. 
 
 Compilação para 100 linhas:
 
@@ -401,7 +400,7 @@ Total de linhas: 100  //Compilação para 100 linhas
 acertos: 85
 erros: 15
 acuracia: 85%
-Tempo de execução: 675ms
+Tempo de execução:  346ms
 ```
 
 Compilação para 1000 linhas:
@@ -413,7 +412,7 @@ Total de linhas: 1000  //Compilação para 1000 linhas
 acertos: 812
 erros: 188
 acuracia: 81.2%
-Tempo de execução: 5893ms
+Tempo de execução:  3297ms
 ```
 ## Analise dos Resultados
 
