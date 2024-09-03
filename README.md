@@ -375,7 +375,7 @@ Para testagem do projeto, foram utilizadas 3 máquinas que rodadaram o cógido e
 |------------------|------------------------|-------------|---------------------|
 | Intel inspiron 15 5000 |Intel(R) Core(TM) i7-11390H    | 16 GB       | Windows 11 Pro (WSL)     |
 | Lenovo ideaPad 3i    | AMD Ryzen 7 5700U       | 12 GB        | Ubuntu 22.02        |
-| PC        | AMS Ryzen 5600X                | 24 GB        | Ubuntu 24.04       |
+| PC        | AMD Ryzen 5600X                | 24 GB        | Ubuntu 24.04       |
 
 # Resultados
 
