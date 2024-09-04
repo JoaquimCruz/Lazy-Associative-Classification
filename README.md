@@ -333,6 +333,38 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
     return classeMaisProvavel;
 }
 ```
+### Treinamento
+```Markdown
+void treinamento(unordered_map<size_t, vector<int>>& assinaturas, unordered_map<int, vector<int>>& classes) {
+    ifstream arquivoTreinamento("Input/poker-hand-training.data");
+    if (!arquivoTreinamento.is_open()) {
+        cerr << "Erro ao abrir o arquivo de treinamento." << endl;
+        return;
+    }
+
+    string linha_treinamento;
+    int linha_id = 0;
+    while (getline(arquivoTreinamento, linha_treinamento)) {
+        vector<tuple<int, int>> tuplas = transformarTuplas(linha_treinamento);
+        vector<size_t> hashes = calcularHash(tuplas);
+
+        for (const auto& h : hashes) {
+            assinaturas[h].push_back(linha_id);
+        }
+
+        stringstream ss(linha_treinamento);
+        string temp;
+        for (int i = 0; i < 11; ++i) {
+            getline(ss, temp, ',');
+        }
+        int classe_real = stoi(temp);
+        classes[classe_real].push_back(linha_id);
+
+        linha_id++;
+    }
+    arquivoTreinamento.close();
+}
+```
 ## Input e output
 
 Arquivos de entrada:
