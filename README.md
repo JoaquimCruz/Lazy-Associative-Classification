@@ -324,7 +324,7 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
 
 
         for (size_t i = 0; i < intersecoes_combinadas.size(); ++i) {
-            combinacao_resultados[i] += intersecoes_combinadas[i];
+            combinacao_resultados[i] += intersecoes_combinadas[i]/tabela_hash.size();
         }
     }
 
