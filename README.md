@@ -27,6 +27,8 @@
         - [Encontrar Interseções](#encontrar-interseções)
         - [Gerar Combinações](#gerar-combinações)
         - [Determinação da classe ](#determinação-da-classe)
+        - [Treinamento](#Treinamento)
+        - [Teste](#Teste)
     - [Input e output](#input-e-output)
 - [Máquinas de Teste](#máquinas-de-teste)
 - [Resultados](#resultados)
@@ -334,6 +336,7 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
 }
 ```
 ### Treinamento
+A função treinamento processa o arquivo de treinamento "poker-hand-training.data" para preencher dois mapas: assinaturas, que associa hashes gerados para cada mão de pôquer a IDs de linhas onde essas mãos aparecem, e classes, que mapeia cada classe (categoria de mão) aos IDs das linhas correspondentes. Após processar todas as linhas, esses mapas são utilizados para classificar novas mãos de pôquer.
 ```Markdown
 void treinamento(unordered_map<size_t, vector<int>>& assinaturas, unordered_map<int, vector<int>>& classes) {
     ifstream arquivoTreinamento("Input/poker-hand-training.data");
@@ -363,6 +366,98 @@ void treinamento(unordered_map<size_t, vector<int>>& assinaturas, unordered_map<
         linha_id++;
     }
     arquivoTreinamento.close();
+}
+```
+### Teste
+
+A função teste utiliza uma função lambda funcao_thread é usada dentro de cada thread para realizar a previsão da classe baseada nos hashes calculados. Se a classe prevista for igual à classe real, o contador de acertos (acertos_totais) é incrementado; caso contrário, o contador de erros (erros_totais) é incrementado. Esses contadores e a escrita no arquivo de saída também são protegidos pelo mutex para garantir que os resultados não sejam corrompidos por acessos concorrentes.
+
+A função lambda é utilizada para encapsular a lógica que será executada por cada thread, permitindo acesso às variáveis externas capturadas por referência, como linha_atual, acertos_totais, erros_totais, e os mutexes, facilitando a sincronização entre as threads.
+
+```Markdown
+void teste(const unordered_map<size_t, vector<int>>& assinaturas, const unordered_map<int, vector<int>>& classes) {
+
+    ifstream arquivoTeste("Input/poker-hand-testing.data");
+    if (!arquivoTeste.is_open()) {
+        cerr << "Erro ao abrir o arquivo de teste." << endl;
+        return;
+    }
+
+    vector<vector<size_t>> hashes_teste;
+    string linha_testing;
+    vector<int> classes_reais;
+    while (getline(arquivoTeste, linha_testing)) {
+        vector<tuple<int, int>> tuplas = transformarTuplas(linha_testing);
+        vector<size_t> hashes = calcularHash(tuplas);
+        hashes_teste.push_back(hashes);
+
+        stringstream ss(linha_testing);
+        string temp;
+        for (int i = 0; i < 11; ++i) {
+            getline(ss, temp, ',');
+        }
+        int classe_real = stoi(temp);
+        classes_reais.push_back(classe_real);
+    }
+    arquivoTeste.close();
+
+    if (hashes_teste.empty()) {
+        cerr << "Nenhuma linha foi lida do arquivo de teste." << endl;
+        return;
+    }
+
+    int num_threads = thread::hardware_concurrency();
+    vector<thread> threads;
+
+    int linha_atual = 0, acertos_totais = 0, erros_totais = 0;
+    mutex mtx;
+    
+    ofstream output_file("output/output.txt");
+    if (!output_file.is_open()) {
+        cerr << "Erro ao abrir o arquivo de saída." << endl;
+        return;
+    }
+    
+    auto funcao_thread = [&]() {
+        while (true) {
+            size_t i;
+            {
+                lock_guard<mutex> lock(mtx);
+                i = linha_atual++;
+            }
+            if (i >= hashes_teste.size()) break;
+
+            int classe_prevista = determinarClasseMaisProvavel(hashes_teste[i], assinaturas, classes);
+            int classe_real = classes_reais[i];
+
+            {
+                lock_guard<mutex> lock(mtx);
+                if (classe_prevista == classe_real) {
+                    acertos_totais++;
+                } else {
+                    erros_totais++;
+                }
+                output_file << "Linha " << i + 1 << ": Classe atribuída: " << classe_prevista << endl;
+            }
+        }
+    };
+
+    for (int i = 0; i < num_threads; ++i) {
+        threads.emplace_back(funcao_thread);
+    }
+
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    int total = acertos_totais + erros_totais;
+    double precisao = static_cast<double>(acertos_totais) / total;
+
+    output_file << "acertos: " << acertos_totais << endl;
+    output_file << "erros: " << erros_totais << endl;
+    output_file << "acuracia: " << precisao * 100.0 << "%" << endl;
+    output_file.close();
+
 }
 ```
 ## Input e output
