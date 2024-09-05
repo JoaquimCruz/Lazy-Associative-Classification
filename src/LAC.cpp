@@ -148,7 +148,7 @@ int determinarClasseMaisProvavel(const vector<size_t>& hashes,
     vector<int> intersecoes_combinadas(10, 0);
     int classeMaisProvavel = -1;
 
-    for (size_t k : {5, 4, 3, 2, 1}) {
+    for (size_t k : {1, 2, 3}) {
         intersecoes_combinadas = gerarCombinacoes(hashes, k, 0, tabela_hash, classes, combinatorias);
 
 
