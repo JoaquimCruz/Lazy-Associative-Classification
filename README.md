@@ -516,7 +516,7 @@ Como não foi possível modificar o `LAC` neste trabalho, não houve oportunidad
 
 ## Tempo de processamento 
 
-O tempo de processamento para `100 linhas` foi em média `346 milissegundos`, e para `1000 linhas` foi em média `3.5 segundos`. Esse desempenho é considerado rápido e adequado, especialmente considerando a complexidade dos cálculos envolvidos, como operações de combinação e interseção. O algoritmo mostra uma boa eficiência em termos de tempo, permitindo que grandes volumes de dados sejam processados rapidamente. Esse tempo de processamento sugere que o modelo é capaz de lidar com operações intensivas sem comprometer significativamente a velocidade, apresentando um crescimento exponencial em relação a massa de dados. 
+O tempo de processamento para `100 linhas` foi em média `346 milissegundos`, e para `1000 linhas` foi em média `2.6 segundos`. Esse desempenho é considerado rápido e adequado, especialmente considerando a complexidade dos cálculos envolvidos, como operações de combinação e interseção. O algoritmo mostra uma boa eficiência em termos de tempo, permitindo que grandes volumes de dados sejam processados rapidamente. Esse tempo de processamento sugere que o modelo é capaz de lidar com operações intensivas sem comprometer significativamente a velocidade, apresentando um crescimento exponencial em relação a massa de dados. 
 
 Compilação para 100 linhas:
 
