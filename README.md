@@ -35,6 +35,7 @@
     - [Precisão Global](#precisão-global)
     - [Tempo de processamento ](#tempo-de-processamento)
     - [Analise dos Resultados](#analise-dos-resultados)
+- [Decisão pela não utilização do LSH](#Decisão pela não utilização do LSH)
 - [Compilação](#compilação)
 
 
@@ -96,7 +97,7 @@ A classificação da massa de dados ocorreu de maneira que cada linha fosse anal
 A análise dos dados inicialmente foi feita para que cada linha fosse dividida em 10 tuplas, de maneira que cada tupla fosse do tipo <coluna, valor>. Entretanto, ao analisar a massa de dados e lendo a sua documentação, foi possível aferir que a abordagem utilizando 5 tuplas, de maneira que cada tupla fosse do tipo <naipe, valor>, seria mais coerente.
 
 Utilizando essa abordagem, foi possível reduzir o número de combinações feitas durante o processo do LAC.
-## Decisão pela não utilização do LSH
+
 # Implementação
 
 Nessa seção serão abordadas as funções do código, bem como suas implementações e lógicas.
@@ -545,7 +546,7 @@ Tempo de execução:  2645ms
 
 A análise dos resultados indica que o desempenho do código foi significativamente influenciado pelos dados fornecidos pelo banco de dados. O treinamento com apenas duas classes limitou as capacidades do modelo, forçando-o a fazer escolhas binárias que nem sempre se alinharam corretamente com os dados de teste. Além disso, a precisão de `81.2%` revela que, embora o modelo tenha aprendido algo, ele ainda é propenso a erros, o que pode ser atribuído tanto à natureza dos dados quanto à simplicidade do algoritmo. A melhoria do desempenho poderia ser alcançada com ajustes no `LAC`, mas essas alterações não eram permitidas neste trabalho, deixando o modelo restrito à sua implementação original.
 
-
+# Decisão pela não utilização do LSH
 # Compilação
 
 Para compilar e rodar o código usando MakeFile, basta seguir os seguintes comandos.
