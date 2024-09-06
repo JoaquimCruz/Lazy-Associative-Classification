@@ -547,7 +547,7 @@ Tempo de execução:  2645ms
 A análise dos resultados indica que o desempenho do código foi significativamente influenciado pelos dados fornecidos pelo banco de dados. O treinamento com apenas duas classes limitou as capacidades do modelo, forçando-o a fazer escolhas binárias que nem sempre se alinharam corretamente com os dados de teste. Além disso, a precisão de `81.2%` revela que, embora o modelo tenha aprendido algo, ele ainda é propenso a erros, o que pode ser atribuído tanto à natureza dos dados quanto à simplicidade do algoritmo. A melhoria do desempenho poderia ser alcançada com ajustes no `LAC`, mas essas alterações não eram permitidas neste trabalho, deixando o modelo restrito à sua implementação original.
 
 # Decisão pela não utilização do LSH
-Inicialmente, a abordagem utilizada para melhoria no `LAC` foi o Locality-sensitive hashing (LSH), que faz por meio de similaridade o agrupamento das linhas em baldes. Essa etapa de pré-processamento dos dados, em teoria, otimizaria o processo feito pela função de teste, já que cada thread iria processar um balde como completo, ao invés de uma linha. Desse modo, a similaridade de linhas em cada balde seria crucial, pois, tratando das mãos de poker, quanto mais similar a linha, a probabilidade delas serem da mesma classe é maior. Entretanto, tivemos algumas dificuldades em realção ao custo computacional da função de criar baldes. A função possuia custo computacional de `O(n*n)`, por conta dos dois laços de repetição aninhados. 
+Inicialmente, a abordagem utilizada para melhoria no `LAC` foi o Locality-sensitive hashing (LSH), que faz por meio de similaridade o agrupamento das linhas em baldes. Essa etapa de pré-processamento dos dados, em teoria, otimizaria o processo feito pela função de teste, já que cada thread iria processar um balde como completo, ao invés de uma linha. Desse modo, a similaridade de linhas em cada balde seria crucial, pois, tratando das mãos de poker, quanto mais similar a linha, a probabilidade delas serem da mesma classe é maior. Entretanto, tivemos algumas dificuldades em relação ao custo computacional da função de criar baldes. A função possuia custo computacional de `O(n²)`, por conta dos dois laços de repetição aninhados. 
 ```Markdown
 vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, double threshold) {
     vector<vector<int>> baldes; // Vetor de baldes para armazenar grupos de índices de linhas
@@ -601,7 +601,15 @@ vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, 
     return baldes;
 }
 ```
-A função de separação em baldes utiliza da lógica da similaridade de jaccard para fazer baldes de linhas similares. O calculo matemático da similaridade é realizado pela divisão entre a interseção entre dois conjuntos e sua união. 
+A função de separação em baldes utilizava o conceito de similaridade de Jaccard para agrupar linhas com características semelhantes em diferentes baldes. A similaridade de Jaccard é uma medida amplamente utilizada para avaliar o grau de semelhança entre dois conjuntos. Ela é definida como a razão entre o tamanho da interseção dos conjuntos e o tamanho de sua união. Essa métrica é particularmente eficaz em cenários onde é necessário quantificar a sobreposição entre conjuntos discretos, como grupos de elementos ou atributos específicos.
+
+Formalmente, a similaridade de Jaccard entre dois conjuntos <strong>A</strong> e <strong>B</strong> é dada por:
+
+<p><strong>S(A, B) = |A ∩ B| / |A ∪ B|</strong></p>
+
+Onde <strong>|A ∩ B|</strong> representa o número de elementos que estão presentes em ambos os conjuntos, e <strong>|A ∪ B|</strong> corresponde ao número total de elementos distintos presentes em pelo menos um dos dois conjuntos. Essa métrica produz um valor entre 0 e 1, onde 0 indica a ausência de elementos em comum e 1 denota que os conjuntos são idênticos.
+
+
 ```Markdown
 double calcularSimilaridadeJaccard(const vector<size_t>& conjuntoA, const vector<size_t>& conjuntoB) {
     unordered_set<size_t> setA(conjuntoA.begin(), conjuntoA.end());
