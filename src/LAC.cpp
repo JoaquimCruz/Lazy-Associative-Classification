@@ -225,7 +225,7 @@ void teste(const unordered_map<size_t, vector<int>>& assinaturas, const unordere
         return;
     }
 
-    int num_threads = thread::hardware_concurrency();
+    int num_threads = 16;
     vector<thread> threads;
 
     int linha_atual = 0, acertos_totais = 0, erros_totais = 0;
