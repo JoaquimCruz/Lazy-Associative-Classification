@@ -96,7 +96,7 @@ A classificação da massa de dados ocorreu de maneira que cada linha fosse anal
 A análise dos dados inicialmente foi feita para que cada linha fosse dividida em 10 tuplas, de maneira que cada tupla fosse do tipo <coluna, valor>. Entretanto, ao analisar a massa de dados e lendo a sua documentação, foi possível aferir que a abordagem utilizando 5 tuplas, de maneira que cada tupla fosse do tipo <naipe, valor>, seria mais coerente.
 
 Utilizando essa abordagem, foi possível reduzir o número de combinações feitas durante o processo do LAC.
-
+## Decisão pela não utilização do LSH
 # Implementação
 
 Nessa seção serão abordadas as funções do código, bem como suas implementações e lógicas.
@@ -370,7 +370,7 @@ void treinamento(unordered_map<size_t, vector<int>>& assinaturas, unordered_map<
 ```
 ### Teste
 
-A função teste utiliza uma função lambda funcao_thread é usada dentro de cada thread para realizar a previsão da classe baseada nos hashes calculados. Se a classe prevista for igual à classe real, o contador de acertos (acertos_totais) é incrementado; caso contrário, o contador de erros (erros_totais) é incrementado. Esses contadores e a escrita no arquivo de saída também são protegidos pelo mutex para garantir que os resultados não sejam corrompidos por acessos concorrentes.
+A função teste utiliza uma função lambda `funcao_thread` para que dentro de cada thread realize simultaneamente a previsão da classe baseada nos hashes calculados. Se a classe prevista for igual à classe real, o contador de acertos (acertos_totais) é incrementado; caso contrário, o contador de erros (erros_totais) é incrementado. Esses contadores e a escrita no arquivo de saída também são protegidos pelo mutex para garantir que os resultados não sejam corrompidos por acessos concorrentes.
 
 A função lambda é utilizada para encapsular a lógica que será executada por cada thread, permitindo acesso às variáveis externas capturadas por referência, como linha_atual, acertos_totais, erros_totais, e os mutexes, facilitando a sincronização entre as threads.
 
@@ -539,7 +539,7 @@ Total de linhas: 1000  //Compilação para 1000 linhas
 acertos: 812
 erros: 188
 acuracia: 81.2%
-Tempo de execução:  3297ms
+Tempo de execução:  2645ms
 ```
 ## Analise dos Resultados
 
