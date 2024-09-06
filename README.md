@@ -35,7 +35,7 @@
     - [Precisão Global](#precisão-global)
     - [Tempo de processamento ](#tempo-de-processamento)
     - [Analise dos Resultados](#analise-dos-resultados)
-- [Decisão pela não utilização do LSH](#Decisão pela não utilização do LSH)
+ - [Decisão pela não utilização do LSH](#decisão-pela-não-utilização-do-LSH)
 - [Compilação](#compilação)
 
 
@@ -547,6 +547,81 @@ Tempo de execução:  2645ms
 A análise dos resultados indica que o desempenho do código foi significativamente influenciado pelos dados fornecidos pelo banco de dados. O treinamento com apenas duas classes limitou as capacidades do modelo, forçando-o a fazer escolhas binárias que nem sempre se alinharam corretamente com os dados de teste. Além disso, a precisão de `81.2%` revela que, embora o modelo tenha aprendido algo, ele ainda é propenso a erros, o que pode ser atribuído tanto à natureza dos dados quanto à simplicidade do algoritmo. A melhoria do desempenho poderia ser alcançada com ajustes no `LAC`, mas essas alterações não eram permitidas neste trabalho, deixando o modelo restrito à sua implementação original.
 
 # Decisão pela não utilização do LSH
+Inicialmente, a abordagem utilizada para melhoria no `LAC` foi o Locality-sensitive hashing (LSH), que faz por meio de similaridade o agrupamento das linhas em baldes. Essa etapa de pré-processamento dos dados, em teoria, otimizaria o processo feito pela função de teste, já que cada thread iria processar um balde como completo, ao invés de uma linha. Desse modo, a similaridade de linhas em cada balde seria crucial, pois, tratando das mãos de poker, quanto mais similar a linha, a probabilidade delas serem da mesma classe é maior. Entretanto, tivemos algumas dificuldades em realção ao custo computacional da função de criar baldes. A função possuia custo computacional de `O(n*n)`, por conta dos dois laços de repetição aninhados. 
+```Markdown
+vector<vector<int>> separarEmBaldes(const vector<vector<size_t>>& hashesLinhas, double threshold) {
+    vector<vector<int>> baldes; // Vetor de baldes para armazenar grupos de índices de linhas
+    mutex baldesMutex; // Mutex para sincronizar acesso aos baldes
+
+    // Função para processar um intervalo de linhas
+    auto processarIntervalo = [&](int start, int end) {
+        for (int i = start; i < end; ++i) {
+            bool encontradoBalde = false;
+
+            // Tentar encontrar um balde adequado para a linha atual
+            {
+                lock_guard<mutex> lock(baldesMutex);
+                for (auto& balde : baldes) {
+                    if (calcularSimilaridadeJaccard(hashesLinhas[i], hashesLinhas[balde[0]]) > threshold) {
+                        balde.push_back(i);  // Adicionar ao balde encontrado
+                        encontradoBalde = true;
+                        break;
+                    }
+                }
+
+                // Se não encontrou um balde adequado, cria um novo
+                if (!encontradoBalde) {
+                    baldes.push_back({i});
+                }
+            }
+        }
+    };
+
+    // Obter o número máximo de threads disponíveis
+    unsigned int numThreads = std::thread::hardware_concurrency();
+    if (numThreads == 0) {
+        numThreads = 8; // Valor padrão se não for possível determinar o número de núcleos
+    }
+
+    vector<thread> threads;
+    int chunkSize = hashesLinhas.size() / numThreads;
+
+    // Dividir o trabalho entre threads
+    for (unsigned int t = 0; t < numThreads; ++t) {
+        int start = t * chunkSize;
+        int end = (t == numThreads - 1) ? hashesLinhas.size() : start + chunkSize;
+        threads.emplace_back(processarIntervalo, start, end);
+    }
+
+    // Esperar todas as threads terminarem
+    for (auto& thread : threads) {
+        thread.join();
+    }
+
+    return baldes;
+}
+```
+A função de separação em baldes utiliza da lógica da similaridade de jaccard para fazer baldes de linhas similares. O calculo matemático da similaridade é realizado pela divisão entre a interseção entre dois conjuntos e sua união. 
+```Markdown
+double calcularSimilaridadeJaccard(const vector<size_t>& conjuntoA, const vector<size_t>& conjuntoB) {
+    unordered_set<size_t> setA(conjuntoA.begin(), conjuntoA.end());
+    unordered_set<size_t> intersecao;
+    unordered_set<size_t> uniao(setA.begin(), setA.end());
+
+    for (const auto& elem : conjuntoB) {
+        if (setA.find(elem) != setA.end()) {
+            intersecao.insert(elem);
+        }
+        uniao.insert(elem);
+    }
+
+    double similaridade = static_cast<double>(intersecao.size()) / uniao.size();
+
+    return similaridade;
+}
+```
+A remoção da LSH trouxe uma melhora significativa no tempo de processamento, sem impacto perceptível na acurácia, que se manteve. Isso aconteceu porque o algoritmo continuou capaz de comparar diretamente as hashes das linhas e classificar corretamente entre as classes "0" e "1", sem a necessidade de utilizar a LSH para organizar ou aproximar os dados. Um dos desafios encontrados durante a implementação foi o uso da Similaridade de Jaccard, que não trouxe os resultados esperados. Quando o threshold de similaridade era muito elevado, o sistema gerava um número excessivo de baldes. Isso se deve ao fato de que, com a abordagem de utilizar 5 tuplas, o número de feições geradas era muito alta, por volta de 200, o que fazia com que as linhas apresentassem uma grande diferença entre si. Esse fator, combinado com o comportamento da função de criação de baldes, cujo custo computacional é quadrático (n²) devido ao for, fez com que o tempo de execução crescesse de forma considerável para processar grandes volumes de dados. Dessa forma, a remoção da LSH permitiu um caminho mais direto para a classificação, resultando em uma redução substancial do tempo de processamento, sem comprometer a precisão dos resultados. Isso evidenciou que a complexidade da função de criação de baldes era um dos maiores obstáculos para a eficiência do código.
+
 # Compilação
 
 Para compilar e rodar o código usando MakeFile, basta seguir os seguintes comandos.
