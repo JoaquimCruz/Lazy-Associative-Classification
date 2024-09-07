@@ -9,7 +9,7 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
-
+#include <functional>
 using namespace std;
 using namespace std::chrono;
 
