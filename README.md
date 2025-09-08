@@ -667,7 +667,7 @@ Para compilar e rodar o código usando MakeFile, basta seguir os seguintes coman
 
 
 ## Como citar
-Se este trabalho te ajudou, por favor cite:
+Se este trabalho Te ajudou, por favor cite:
 
 > Cruz, J. C. S., Portela, L. C., Teles, J. F., Lacerda, M. B. A., Santos, B. P., Almeida, E. H. Q.  
 > "Lazy-Associative-Classification: Uma abordagem utilizando Assinaturas Hash", 2025. GitHub.
