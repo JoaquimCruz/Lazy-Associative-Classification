@@ -664,3 +664,10 @@ Para compilar e rodar o código usando MakeFile, basta seguir os seguintes coman
 <p>
   Eduardo Henrique Queiroz Almeida - Graduando em Engenharia da Computação pelo <a href="https://www.cefetmg.br" target="_blank">CEFET-MG</a>. Contato: (<a href="mailto:eduardo.almeida@aluno.cefetmg.br">eduardo.almeida@aluno.cefetmg.br</a>)
 </p>
+
+
+## Como citar
+Se este trabalho te ajudou, por favor cite:
+
+> Cruz, J. C. S., Portela, L. C., Teles, J. F., Lacerda, M. B. A., Santos, B. P., Almeida, E. H. Q.  
+> "Lazy-Associative-Classification: Uma abordagem utilizando Assinaturas Hash", 2025. GitHub.
